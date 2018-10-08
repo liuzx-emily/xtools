@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="ztree"></script>
+    <style>
+    /*视觉效果和 zTreeObj.getCheckedNodes()的结果一致，以免引起不必要的误会*/
+
+    .ztree li span.button.chk.checkbox_false_part {
+        background-position: -5px -5px;
+    }
+    .ztree li span.button.chk.checkbox_false_part_focus {
+        background-position: -5px -26px;
+    }
+    .ztree li span.button.chk.checkbox_true_part {
+        background-position: -26px -5px;
+    }
+    .ztree li span.button.chk.checkbox_true_part_focus {
+        background-position: -26px -26px;
+    }
+    </style>
+    <script>
+    var zTreeObj;
+    var setting = {
+        callback: {
+            // 如果返回 false，节点不会被选中，也不会触发onClick的回调函数
+            beforeClick: function(treeId, treeNode, clickFlag) {
+                // clickFlag-0取消选中 1普通选中 2追加选中
+            },
+            onClick: function(event, treeId, treeNode, clickFlag) {
+                console.log("onClick", treeNode);
+                // 实现点击加载数据 注意要有addSonFlag
+                if (parseInt(treeNode.id) === 5 && (!treeNode.addSonFlag)) {
+                    treeNode.addSonFlag = true;
+                    var newNodes = [
+                        { text: "须鲸", id: "51", open: true },
+                        { text: "齿鲸", id: "52" },
+                        { text: "小须鲸", id: "53", parentId: "51" },
+                        { text: "北须鲸", id: "54", parentId: "51" },
+                        { text: "长须鲸", id: "55", parentId: "51" },
+                    ];
+                    zTreeObj.addNodes(treeNode, -1, newNodes);
+                }
+            },
+            // 【edit功能】如果返回 false，节点将无法进入编辑名称状态。因为要使用ajax，所以一律return false
+            beforeEditName: function(treeId, treeNode) {
+                // 是否能编辑？
+                if (parseInt(treeNode.id) == 6) {
+                    layer.msg("不允许编辑长鼻目！", { icon: 5 })
+                    return false;
+                }
+                layer.prompt({
+                    title: false,
+                    value: treeNode.text
+                }, function(value, promptLayerIndex, elem) {
+                    // 编辑前验证，长度、正则等
+                    if (value.length < 5) {
+                        layer.msg("名字不能少于5个字!", { icon: 5 })
+                        return;
+                    }
+                    layer.load();
+                    // 模拟ajax
+                    setTimeout(function() {
+                        layer.closeAll("loading");
+                        if (window.confirm("模拟ajax修改，返回succes吗？")) {
+                            // 相当于ajax的success回调
+                            treeNode.text = value;
+                            // 更新节点
+                            zTreeObj.updateNode(treeNode, false);
+                            layer.msg("编辑成功!", { icon: 6 })
+                        } else {
+                            // 相当于ajax的error回调
+                            layer.msg("编辑失败!", { icon: 5 })
+                        }
+                    }, 500);
+                    layer.close(promptLayerIndex);
+                });
+                return false;
+            },
+            // 【edit功能】如果返回false则不执行onRemove。因为要使用ajax，所以一律return false
+            beforeRemove: function(treeId, treeNode) {
+                // 是否能删？
+                if (parseInt(treeNode.id) !== 6) {
+                    layer.msg("只允许删除长鼻目！", { icon: 5 })
+                    return false;
+                }
+                // 让用户确认真的要删吗
+                layer.confirm('您确认删除吗？', { icon: 7, title: false },
+                    function(confirmLayerIndex) {
+                        layer.load();
+                        // 模拟ajax
+                        setTimeout(function() {
+                            layer.closeAll("loading");
+                            if (window.confirm("模拟ajax删除，返回succes吗？")) {
+                                // 相当于ajax的success回调
+                                zTreeObj.removeNode(treeNode, false);
+                                layer.msg("成功删除" + treeNode.text + "!", { icon: 6 })
+                            } else {
+                                // 相当于ajax的error回调
+                                layer.msg("删除" + treeNode.text + "失败!", { icon: 5 })
+                            }
+                        }, 500);
+                        // 关闭确认层
+                        layer.close(confirmLayerIndex);
+                    });
+                // 因为要使用ajax交互，所以一律返回false，不进入onRemove
+                return false;
+            }
+        },
+        view: {
+            // 是否允许使用ctrl来多选
+            selectedMulti: false,
+            // 是否允许使用ctrl来取消选择
+            autoCancelSelected: false,
+            // 是否显示节点之间的连线
+            showLine: true
+        },
+        data: {
+            // 初始化、异步加载或 addNodes时输入的数据是否采用简单数据模式 (Array)
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "parentId"
+            },
+            key: {
+                name: "text"
+            }
+        },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "", "N": "" }
+        },
+        edit: {
+            enable: true,
+            showRenameBtn: true,
+            renameTitle: "编辑",
+            showRemoveBtn: true,
+            removeTitle: "删除",
+        }
+
+    };
+    var zNodes = [
+        { text: "动物", id: "1", parentId: "" },
+        { text: "哺乳动物", id: "2", parentId: "1" },
+        { text: "灵长目", id: "3", parentId: "2" },
+        { text: "啮齿目", id: "4", parentId: "2" },
+        { text: "鲸目", id: "5", parentId: "2", checked: true },
+        { text: "长鼻目", id: "6", parentId: "2" },
+        { text: "亚洲象", id: "7", parentId: "6" },
+        { text: "非洲象", id: "8", parentId: "6" },
+    ];
+    $(function() {
+        zTreeObj = $.fn.zTree.init($("#demo1"), setting, zNodes);
+        // 默认展开、收起所有节点，不会触发expand和collapse相关的回调。true展开 false收起
+        zTreeObj.expandAll(true);
+    });
+    </script>
+</head>
+
+<body>
+    <style>
+    button {
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+    </style>
+    <button class="blue" onclick="fn_getChecked()">获取勾选的节点，返回数组</button>
+    <br> 对id为2的节点（哺乳动物）：
+    <button class="blue" onclick="fn_checkById1()">勾选</button>
+    <button class="blue" onclick="fn_checkById2()">取消勾选</button>
+    <button class="blue" onclick="fn_checkById3()">切换勾选</button>
+    <br>
+    <button class="blue" onclick="fn_getClicking()">获取点击选中的节点，返回数组</button>
+    <br> 对id为2的节点（哺乳动物）：
+    <button class="blue" onclick="fn_clickById()">点击选中</button>
+    <button class="blue" onclick="fn_unSelectedById()">取消选中</button>
+    <br>
+    <button class="blue" onclick="fn_unSelectedAll()">取消选中所有</button>
+    <br>
+    <button class="blue" onclick="fn_expandAll()">展开所有</button>
+    <button class="blue" onclick="fn_contractAll()">收起所有</button>
+    <!-- class="ztree"不能少 -->
+    <div id="demo1" class="ztree"></div>
+    <script>
+    // 获取所有勾选的项
+    function fn_getChecked() {
+        console.log(zTreeObj.getCheckedNodes());
+    }
+    // 获取所有当前点击选中的项
+    function fn_getClicking() {
+        console.log(zTreeObj.getSelectedNodes());
+    }
+    // checkbox 勾选
+    function fn_checkById1() {
+        // 注意：getNodesByParam返回一个数组
+        var node = zTreeObj.getNodesByParam("id", "2", null)[0];
+        // 第二个参数：true勾选 false取消 省略则toggle
+        zTreeObj.checkNode(node, true, false, false);
+    }
+    // checkbox 取消勾选
+    function fn_checkById2() {
+        var node = zTreeObj.getNodesByParam("id", "2", null)[0];
+        zTreeObj.checkNode(node, false, false, false);
+    }
+    // checkbox 切换勾选
+    function fn_checkById3() {
+        var node = zTreeObj.getNodesByParam("id", "2", null)[0];
+        zTreeObj.checkNode(node, undefined, false, false);
+    }
+    // 点击选中
+    function fn_clickById() {
+        var node = zTreeObj.getNodesByParam("id", "2", null)[0];
+        // 第二个参数：true勾选
+        zTreeObj.selectNode(node, false, true);
+    }
+    // 取消选中
+    function fn_unSelectedById() {
+        var node = zTreeObj.getNodesByParam("id", "2", null)[0];
+        zTreeObj.cancelSelectedNode(node);
+    }
+    // 取消所有选中项
+    function fn_unSelectedAll() {
+        var nodes = zTreeObj.getSelectedNodes();
+        $.each(nodes, function(index, node) {
+            zTreeObj.cancelSelectedNode(node);
+        });
+    }
+    // 展开所有节点
+    function fn_expandAll() {
+        zTreeObj.expandAll(true);
+    }
+    // 收起所有节点
+    function fn_contractAll() {
+        zTreeObj.expandAll(false);
+    }
+    </script>
+</body>
+
+</html>

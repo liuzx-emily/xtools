@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+</head>
+
+<body>
+    <input type="text" class="laydate-demo">
+    <input type="text" class="laydate-demo">
+    <button class="blue" onclick="addDateInput();">再添加一个</button>
+    <script>
+    //同时绑定多个
+    lay('.laydate-demo').each(function() {
+        laydate.render({
+            elem: this,
+            trigger: 'click'
+        });
+    });
+
+
+    function addDateInput() {
+        var html = '<input type="text" class="laydate-demo">';
+        $("body").append(html);
+        setTimeout(function() {
+            //每次添加一个，都要重新绑定一次
+            lay('.laydate-demo').each(function() {
+                laydate.render({
+                    elem: this,
+                    trigger: 'click'
+                });
+            });
+        }, 50);
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+i.fileIcon {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+i.fileIcon.icon-doc {
+    background-image: url(fileIcon/icon-doc.svg);
+}
+i.fileIcon.icon-file {
+    background-image: url(fileIcon/icon-file.svg);
+}
+i.fileIcon.icon-music {
+    background-image: url(fileIcon/icon-music.png);
+}
+i.fileIcon.icon-pdf {
+    background-image: url(fileIcon/icon-pdf.svg);
+}
+i.fileIcon.icon-pic {
+    background-image: url(fileIcon/icon-pic.png);
+}
+i.fileIcon.icon-ppt {
+    background-image: url(fileIcon/icon-ppt.svg);
+}
+i.fileIcon.icon-video {
+    background-image: url(fileIcon/icon-video.png);
+}
+i.fileIcon.icon-xls {
+    background-image: url(fileIcon/icon-xls.svg);
+}
+i.fileIcon.icon-txt {
+    background-image: url(fileIcon/icon-txt.svg);
+}

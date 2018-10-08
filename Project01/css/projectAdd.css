@@ -1,0 +1,74 @@
+.grayTips {
+    text-align: right;
+    color: #aaa;
+    font-size: 12px;
+    margin: 15px 0;
+}
+.projectinfo_box {}
+.projectinfo_box_titlebox {
+    position: relative;
+}
+.projectinfo_box_titlebox>h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2196F3;
+}
+.projectinfo_box_togglebtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #90CAF9;
+    box-shadow: #81D4FA 1px 1px 4px;
+    border-radius: 2px;
+    padding: 2px 10px;
+    color: #0277BD;
+}
+.projectinfo_box_togglebtn>i {
+    margin-right: 5px
+}
+.projectinfo_box_contentbox {
+    position: relative;
+    margin-top: 15px;
+}
+.input_group {
+    margin: 10px 0;
+    display: inline-block;
+    width: 550px;
+}
+.input_group span.input_group_text {
+    font-size: 14px;
+    margin-right: 10px;
+    width: 150px;
+    text-align: right;
+    display: inline-block;
+}
+.input_group input {
+    width: 270px;
+    border: 1px solid #ccc;
+    padding: 6px 0px;
+    padding-left: 5px;
+     vertical-align: middle;
+}
+.input_group select {
+    height: 29px;
+    padding-bottom: 2px;
+    margin-top: 1px;
+    border: 1px solid #ccc;
+    width: 160px;
+}
+.btn_map, .btn_file {
+    width: 85px;
+    cursor: pointer;
+    background-color: #E0F7FA;
+    border: 1px solid #80DEEA;
+    line-height: 25px;
+    font-size: 12px;
+    text-align: center;
+    padding: 3px 8px;
+    color: #337ab7;
+}
+.btn_map>i, .btn_file>i {
+    margin-right: 5px;
+}

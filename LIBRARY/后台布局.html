@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <style>
+    #x_backgroundSystem_header {
+        background: #99CCFF;
+        height: 80px;
+    }
+    #x_backgroundSystem_main {
+        position: fixed;
+        top: 80px;
+        width: 100%;
+        bottom: 0;
+    }
+    #x_backgroundSystem_sidebar {
+        width: 250px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: #FFCC99;
+    }
+    #x_backgroundSystem_content_wrap {
+        margin-left: 250px;
+        background: #fff;
+        height: 100%;
+        overflow: auto;
+    }
+    </style>
+    <title></title>
+</head>
+
+<body>
+    <header id="x_backgroundSystem_header">这里是头部</header>
+    <section id="x_backgroundSystem_main">
+        <aside id="x_backgroundSystem_sidebar"></aside>
+        <article id="x_backgroundSystem_content_wrap">
+            <section id="x_backgroundSystem_content" style="line-height: 500px">
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+                <p>小明</p>
+            </section>
+        </article>
+    </section>
+</body>
+
+</html>

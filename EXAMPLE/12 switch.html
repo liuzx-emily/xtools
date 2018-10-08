@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+</head>
+
+<body>
+    <div>
+        <button class="blue" onclick="switch_on();">开启</button>
+        <button class="darkblue" onclick="switch_off();">关闭</button>
+        <button class="green" onclick="switch_auto();">切换</button>
+        <button class="blue" onclick="get()">取值</button>
+        <input type="checkbox" class="style1" id="demo1">
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2>默认 Flat</h2>
+    <input type="checkbox" class="style1" disabled>
+    <input type="checkbox" class="style1" disabled checked>
+    <input type="checkbox" class="style1">
+    <input type="checkbox" class="style1" checked>
+    <h2>FlatRadius</h2>
+    <input type="checkbox" class="style2" disabled>
+    <input type="checkbox" class="style2" disabled checked>
+    <input type="checkbox" class="style2">
+    <input type="checkbox" class="style2" checked>
+    <h2>FlatCircular</h2>
+    <input type="checkbox" class="style3" disabled>
+    <input type="checkbox" class="style3" disabled checked>
+    <input type="checkbox" class="style3">
+    <input type="checkbox" class="style3" checked>
+    <h2>Default</h2>
+    <input type="checkbox" class="style4" disabled>
+    <input type="checkbox" class="style4" disabled checked>
+    <input type="checkbox" class="style4">
+    <input type="checkbox" class="style4" checked>
+    <h2>DefaultMin</h2>
+    <input type="checkbox" class="style5" disabled>
+    <input type="checkbox" class="style5" disabled checked>
+    <input type="checkbox" class="style5">
+    <input type="checkbox" class="style5" checked>
+    <h2>Green 必须引用font-awesome</h2>
+    <input type="checkbox" class="style6" disabled>
+    <input type="checkbox" class="style6" disabled checked>
+    <input type="checkbox" class="style6">
+    <input type="checkbox" class="style6" checked>
+    <script>
+    $(".style1").simpleSwitch();
+    $(".style2").simpleSwitch({
+        "theme": "FlatRadius"
+    });
+    $(".style3").simpleSwitch({
+        "theme": "FlatCircular"
+    });
+    $(".style4").simpleSwitch({
+        "theme": "Default"
+    });
+    $(".style5").simpleSwitch({
+        "theme": "DefaultMin"
+    });
+    $(".style6").simpleSwitch({
+        "theme": "Green"
+    });
+    // 开启
+    function switch_on() {
+        var oSwitch = $("#demo1");
+        if (oSwitch.attr('result') === "true") {
+
+        } else {
+            oSwitch.trigger('click');
+        }
+    }
+    // 关闭
+    function switch_off() {
+        var oSwitch = $("#demo1");
+        if (oSwitch.attr('result') === "true") {
+            oSwitch.trigger('click');
+        } else {
+
+        }
+    }
+    // 切换
+    function switch_auto() {
+        var oSwitch = $("#demo1");
+        if (oSwitch.attr('result') === "true") {
+            oSwitch.trigger('click');
+        } else {
+            oSwitch.trigger('click');
+        }
+    }
+    // 取值
+    function get() {
+        var oSwitch = $("#demo1");
+        if (oSwitch.attr('result') === "true") {
+            layer.msg("开", { icon: 1 });
+        } else {
+            layer.msg("关", { icon: 2 });
+        }
+    }
+    </script>
+</body>
+
+</html>

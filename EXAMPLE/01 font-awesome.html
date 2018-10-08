@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+</head>
+
+<body>
+    <a href="http://fontawesome.dashgame.com/">查看全部图标点这里</a>
+    <div>
+        <h2>改颜色</h2>
+        <i class="fa fa-heart"></i>
+        <i class="fa fa-heart" style="color:coral"></i>
+        <i class="fa fa-heart" style="color:cadetblue"></i>
+    </div>
+    <hr>
+    <div>
+        <h2>改大小</h2>
+        <i class="fa fa-heart"></i>
+        <i class="fa fa-heart fa-lg"></i>
+        <i class="fa fa-heart fa-2x"></i>
+        <i class="fa fa-heart fa-3x"></i>
+        <i class="fa fa-heart fa-4x"></i>
+        <i class="fa fa-heart fa-5x"></i>
+    </div>
+    <hr>
+    <div>
+        <h2>旋转</h2>
+        <i class="fa fa-heart"></i>
+        <i class="fa fa-heart fa-rotate-90"></i>
+        <i class="fa fa-heart fa-rotate-180"></i>
+        <i class="fa fa-heart fa-rotate-270"></i>
+        <i class="fa fa-heart fa-flip-horizontal"></i>
+        <i class="fa fa-heart fa-flip-vertical"></i>
+    </div>
+    <hr>
+    <div>
+        <h2>转起来</h2>
+        <i class="fa fa-heart"></i>
+        <i class="fa fa-heart fa-spin"></i>
+    </div>
+    <hr>
+    <div>
+        <h2>组合使用</h2>
+        <p>定义父容器：fa-stack</p>
+        <p>定义小图标：fa-stack-1x，定义大图标：fa-stack-2x。</p>
+        <span class="fa-stack">
+            <i class="fa fa-square-o fa-stack-2x"></i>
+            <i class="fa fa-twitter fa-stack-1x"></i>
+        </span>
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-square-o fa-stack-2x"></i>
+            <i class="fa fa-twitter fa-stack-1x"></i>
+        </span>
+        <span class="fa-stack fa-2x">
+            <i class="fa fa-square-o fa-stack-2x"></i>
+            <i class="fa fa-twitter fa-stack-1x"></i>
+        </span>
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-square-o fa-stack-2x" style="color:#8BC34A"></i>
+            <i class="fa fa-twitter fa-stack-1x" style="color:#03A9F4"></i>
+        </span>
+        <span class="fa-stack">
+            <i class="fa fa-camera fa-stack-1x"></i>
+            <i class="fa fa-ban fa-stack-2x text-danger" style="color: #FF5722;"></i>
+        </span>
+    </div>
+</body>
+
+</html>

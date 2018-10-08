@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="echarts2"></script>
+    <style>
+    h2 {
+        text-align: center;
+        margin: 50px 0;
+    }
+    .search-box {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .search-box .search-title {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+        vertical-align: top;
+    }
+    .echarts_demo {
+        display: block;
+        width: 80%;
+        height: 400px;
+        margin: 10px auto;
+    }
+    .zxlaydate_1, .zxlaydate_2 {
+        border: 1px solid #aaa;
+        border: 1px solid #ccc;
+        padding: 5px;
+        width: 100px;
+        text-align: center;
+        margin: 0 5px;
+    }
+    .zxselect2 {
+        width: 200px;
+    }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h2>知识统计</h2>
+        <div style="text-align: center;">
+            <div class="search-box">
+                <span class="search-title">时间:</span>
+                <input type="text" class="zxlaydate_1" id="date1_1">至
+                <input type="text" class="zxlaydate_2" id="date1_2">
+            </div>
+            <div class="search-box">
+                <span class="search-title">应用系统：</span>
+                <select class="zxselect2" multiple="multiple" id="appsystem1_select">
+                    <option value="系统1的id">系统1</option>
+                    <option value="系统2的id">系统2</option>
+                    <option value="系统3的id">系统3</option>
+                </select>
+            </div>
+            <button class="blue big" onclick="renderEcharts_1();">筛选</button>
+        </div>
+        <div id="echarts_demo1" class="echarts_demo"></div>
+    </div>
+    <script>
+    $(function() {
+        init();
+        renderEcharts_1();
+    });
+
+    function init() {
+        // 日期
+        lay('.zxlaydate_1').each(function() {
+            laydate.render({
+                elem: this,
+                trigger: 'click',
+                type: "date",
+                max: 0,
+                // 默认值为当前月的第一天
+                value: $.getFirstDayOfMonth(),
+                // 不要clear按钮
+                btns: ['now', 'confirm']
+            });
+        });
+        lay('.zxlaydate_2').each(function() {
+            laydate.render({
+                elem: this,
+                trigger: 'click',
+                type: "date",
+                max: 0,
+                // 默认值为当天
+                value: new Date(),
+                // 不要clear按钮
+                btns: ['now', 'confirm']
+            });
+        });
+        // 下拉框
+        $('.zxselect2').select2({
+            // 选择后是否关闭下拉框
+            closeOnSelect: false,
+            // 指定语言为中文
+            language: 'zh-CN'
+        });
+    }
+
+    function renderEcharts_1() {
+        var param = {};
+        // 取参数：时间
+        var startTime = $("#date1_1").val();
+        if (startTime == "") {
+            layer.msg("必须选择起始日期", {
+                icon: 2
+            });
+            return;
+        }
+        param.startTime = new Date(startTime + " 0:00:00").getTime();
+        var endTime = $("#date1_2").val();
+        if (endTime == "") {
+            $("#date1_2").val(new Date().format("yyyy-MM-dd"));
+            param.endTime = new Date().getTime();
+        } else {
+            param.endTime = new Date(endTime + " 23:59:59").getTime();
+        }
+        if (param.startTime > param.endTime) {
+            layer.msg("起始日期不能大于结束日期", {
+                icon: 2
+            });
+            return;
+        }
+        // 取参数：select2（返回值是null或者数组 ["1"] ["2","3"]）
+        var appsystem = $("#appsystem1_select").val();
+        if (appsystem) {
+            param.appsystem = appsystem.join("-");
+        }
+        console.log(param);
+        // ---------------------------- ajax调用 ----------------------------
+        // y轴数据后台返回
+        var fileNumData = [20, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3];
+        var visitNumData = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3];
+        var downloadNumData = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3];
+        // x轴数据前台计算
+        var xAxis_data = $.getDaysBetween($("#date1_1").val(), $("#date1_2").val());
+        var option = {
+            legend: {
+                data: ['收录数量', '访问量', '下载量'],
+                x: 'center',
+                y: '20',
+                orient: 'horizontal'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: { show: true, type: ['line', 'bar'] }
+                }
+            },
+            // 整个坐标系位置
+            grid: {
+                x: 30,
+                x2: 30,
+                y: 50,
+                y2: 70
+            },
+            xAxis: [{
+                type: 'category',
+                data: xAxis_data,
+                // x轴显示所有节点
+                axisLabel: {
+                    interval: 0,
+                    rotate: 30
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                    name: '收录数量',
+                    type: 'bar',
+                    data: fileNumData
+                },
+                {
+                    name: '访问量',
+                    type: 'bar',
+                    data: visitNumData
+                },
+                {
+                    name: '下载量',
+                    type: 'bar',
+                    data: downloadNumData
+                }
+            ]
+        };
+        //定义echarts容器
+        var myChart = echarts.init($("#echarts_demo1").get(0), 'macarons');
+        myChart.setOption(option);
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <title>拖拽换位</title>
+    <style>
+    #prisonContainer {
+        padding: 20px;
+        width: 1000px;
+        margin-left: 300px;
+        margin-top: 100px;
+        background: #eee;
+    }
+    #prison {
+        position: relative;
+        height: 500px;
+    }
+    .box {
+        position: absolute;
+        width: 100%;
+        height: 80px;
+        cursor: move;
+    }
+    .box:nth-child(1) {
+        left: 0;
+        top: 0;
+        background: coral;
+    }
+    .box:nth-child(2) {
+        left: 0;
+        top: 100px;
+        background: #FFC107;
+    }
+    .box:nth-child(3) {
+        left: 0;
+        top: 200px;
+        background: #CDDC39;
+    }
+    .box:nth-child(4) {
+        left: 0;
+        top: 300px;
+        background: #07C1FF;
+    }
+    </style>
+</head>
+
+<body>
+    <pre>
+        1 只能在单列中换上下位置
+        2 每个拖拽块的大小宽度都固定
+    </pre>
+    <div id="prisonContainer">
+        <div id="prison">
+            <div class="box" data-index="1">时事新闻</div>
+            <div class="box" data-index="2">优秀党员</div>
+            <div class="box" data-index="3">现状调查</div>
+            <div class="box" data-index="4">风采展示</div>
+        </div>
+    </div>
+    <script>
+    move($(".box"));
+
+    function move(obj) {
+        obj.each(function(index, item) {
+            var data_index = $(item).attr('data-index');
+            const oHandle = item;
+            const oDiv = item;
+            oHandle.onmousedown = function(e) {
+                var disX = e.clientX - parseInt($(oDiv).css('left') || 0);
+                var disY = e.clientY - parseInt($(oDiv).css('top') || 0);
+
+                if (oDiv.setCapture) {
+                    oDiv.setCapture();
+                }
+
+                document.onmousemove = function(e) {
+                    $(oDiv).css('z-index', '99999999');
+                    var ev = ev || event;
+                    var L = ev.clientX - disX;
+                    var T = ev.clientY - disY;
+                    // 不能出圈
+                    if (L < 0) {
+                        L = 0;
+                    } else if (L > $("#prison").width() - $(oDiv).width()) {
+                        L = $("#prison").width() - $(oDiv).width();
+                    }
+
+                    if (T < 0) {
+                        T = 0;
+                    } else if (T > $("#prison").height() - $(oDiv).height()) {
+                        T = $("#prison").height() - $(oDiv).height();
+                    }
+
+                    // 重新排列
+                    obj.map(function(index, item) {
+                        return {
+                            index: $(item).attr('data-index'),
+                            top: parseInt($(item).css('top'))
+                        };
+                    }).sort(function(item1, item2) {
+                        return item1.top - item2.top;
+                    }).each(function(index, item) {
+                        if (data_index == item.index) return;
+                        $(".box[data-index='" + item.index + "']").stop(true, false).animate({ top: index * 100 }, 100);
+                    });
+
+                    oDiv.style.left = L + 'px';
+                    oDiv.style.top = T + 'px';
+                };
+
+                document.onmouseup = function(e) {
+                    $(oDiv).css('z-index', '0');
+
+                    // 重新排列
+                    obj.map(function(index, item) {
+                        return {
+                            index: $(item).attr('data-index'),
+                            top: parseInt($(item).css('top'))
+                        };
+                    }).sort(function(item1, item2) {
+                        return item1.top - item2.top;
+                    }).each(function(index, item) {
+                        $(".box[data-index='" + item.index + "']").stop(true, false).animate({ top: index * 100 }, 300);
+                    });
+
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                    if (oDiv.releaseCapture) {
+                        oDiv.releaseCapture();
+                    }
+                };
+                return false;
+            };
+        })
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <style>
+    input[type='button'] {
+        margin-bottom: 20px;
+        margin-right: 20px;
+    }
+    </style>
+</head>
+
+<body>
+    <input type="button" value="1 成功 绿色对勾" onclick="msg1()">
+    <input type="button" value="6 成功 绿色笑脸" onclick="msg6()">
+    <br>
+    <input type="button" value="2 错误 红叉" onclick="msg2()">
+    <input type="button" value="5 错误 红色哭脸" onclick="msg5()">
+    <br>
+    <input type="button" value="7 警告 黄色叹号" onclick="msg7()">
+    <br>
+    <input type="button" value="3 问题 黄色问号" onclick="msg3()">
+    <br>
+    <input type="button" value="4 灰色锁" onclick="msg4()">
+    <br>
+    <input type="button" value="加载层" onclick="openLoading()">
+    <br>
+    <input type="button" class="blue" value="修改layer位置" onclick="msg_relocate()">
+    <script>
+    function msg1(arguments) {
+        layer.msg("哈哈", { icon: 1 });
+    }
+
+    function msg2(arguments) {
+        layer.msg("哈哈", { icon: 2 });
+    }
+
+    function msg3(arguments) {
+        layer.msg("哈哈", { icon: 3 });
+    }
+
+    function msg4(arguments) {
+        layer.msg("哈哈", { icon: 4 });
+    }
+
+    function msg5(arguments) {
+        layer.msg("哈哈", { icon: 5 });
+    }
+
+    function msg6(arguments) {
+        layer.msg("哈哈", { icon: 6 });
+    }
+
+    function msg7(arguments) {
+        layer.msg("哈哈", { icon: 7 });
+    }
+
+    function msg8(arguments) {
+        layer.msg("哈哈", { icon: 8 });
+    }
+
+    function msg_relocate() {
+        var _layer_index = layer.open({
+            type: 1,
+            title: false,
+            shade: 0,
+            content: `<div style="padding: 20px;color: #FF5722;font-size:14px;line-height:1.5;">layer的offset定位只能根据left和top。<br>如果想要根据right和bottom定位，只能在初始化之后立刻调用style方法</div>`,
+            area: ["250px", "150px"],
+            offset: 'rb'
+        });
+        layer.style(_layer_index, {
+            left: "auto",
+            top: "auto",
+            right: "20px",
+            bottom: "20px",
+        });
+    }
+
+    function openLoading() {
+        // 开启加载层
+        layer.load();
+        // 1.5s后关闭
+        setTimeout(function() {
+            // 关闭所有加载层
+            layer.closeAll("loading");
+        }, 1500);
+    }
+    </script>
+</body>
+
+</html>

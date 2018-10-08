@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/public.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <script src="js/public.js"></script>
+    <title>列表页1</title>
+    <link rel="stylesheet" href="css/projectAdd.css">
+    <script src="js/projectAdd.js"></script>
+</head>
+
+<body>
+    <div id="header-container"></div>
+    <div id="nav-container"></div>
+    <div class="commonBG">
+        <div class="w1200">
+            <div id="breadCrumb">
+                <i class="fa fa-map-marker"></i>当前位置：
+                <a class="breadCrumb-link" href="index.html">首页</a>
+                <span class="seperator">&gt;</span>
+                <a class="breadCrumb-link" href="projectList.html">项目信息管理</a>
+                <span class="seperator">&gt;</span>
+                <span class="breadCrumb-text">新增</span>
+            </div>
+            <div id="main-content">
+                <div class="grayTips">填写说明：金额以万元为单位，面积以亩为单位</div>
+                <!--------------------------------项目基本信息---------------------------->
+                <div class="projectinfo_box">
+                    <div class="projectinfo_box_titlebox">
+                        <h2>--- 项目基本信息 ---</h2>
+                        <div class="projectinfo_box_togglebtn">
+                            <i class="fa fa-angle-double-up"></i>
+                            <span>折叠</span>
+                        </div>
+                    </div>
+                    <div class="projectinfo_box_contentbox">
+                        <div class="input_group">
+                            <span class="input_group_text">项目名称：</span>
+                            <input type="text" id="proName" x-valid="musthave" x-chs="项目名称" maxlength="20">
+                        </div>
+                        <div class="input_group">
+                            <span class="input_group_text">建设单位：</span>
+                            <select id="deptType" style="width:80px;">
+                                <option value="1">自然人</option>
+                                <option value="2">法人代表</option>
+                            </select>
+                            <input type="text" id="deptName" x-valid="musthave" x-chs="建设单位" maxlength="20">
+                        </div>
+                        <div class="input_group" style="width:1100px;">
+                            <span class="input_group_text">坐落位置：</span>
+                            天津市
+                            <select id="select_qu" style="width: 70px;"></select>
+                            <select id="select_jiezhen" style="width: 95px;"></select>
+                            <select id="select_cun" style="width: 150px;"></select>
+                            <input type="text" id="detailPosition" value="">
+                        </div>
+                        <div id="xiangmubtnnuoweizhi">
+                            <a class="btn_map" style="margin-left: 12px;" onclick="project_editmap_fn();">
+                                <i class="fa fa-map"></i>编辑地图</a>
+                            <a id="project_file_btn" onclick="openFileDialo(this);" filetype="0" class="btn_map" filebtnid="ccbc2c5d68bd4669b487fd29c45175cb" style="margin-left: 10px;">
+                                <i class="fa fa-photo"></i>现场照片</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-container"></div>
+</body>
+
+</html>

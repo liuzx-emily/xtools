@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <script>
+    $(function() {
+        $('#demo2').select2({
+            width: "500px",
+            // 选择后是否关闭下拉框
+            closeOnSelect: true,
+            // 多选时，同时可以选择的个数。如果启用这个，那么closeOnSelect必须为true
+            maximumSelectionLength: 2,
+            // 指定语言为中文
+            language: 'zh-CN'
+        });
+        // $("#demo3").select2({
+        //     closeOnSelect: false,
+        //     maximumSelectionLength: 5,
+        //     ... // I have AJAX implemented here
+        // }).on("change", function(e) {
+        //     if (e.target.length == 5) {
+        //         $("#select2").select2({
+        //             closeOnSelect: true,
+        //             maximumSelectionLength: 5,
+        //         });
+        //     }
+        // });
+    });
+    // 禁用
+    function zxfn_disableSelect2(id) {
+        $("#" + id).prop({ disabled: true });
+    }
+    // 启用
+    function zxfn_enableSelect2(id) {
+        $("#" + id).prop({ disabled: false });
+    }
+    // 取值
+    function zxfn_getSelect2(id) {
+        var res = $("#" + id).val();
+        alert(res);
+    }
+    // 赋值
+    function zxfn_setSelect2(id, txt) {
+        $("#" + id).val(txt).trigger("change");
+    }
+    </script>
+</head>
+
+<body>
+    <input type="button" onclick="zxfn_disableSelect2('demo2')" value="禁用">
+    <input type="button" onclick="zxfn_enableSelect2('demo2')" value="启用">
+    <input type="button" onclick="zxfn_getSelect2('demo2')" value="取值">
+    <input type="button" onclick="zxfn_setSelect2('demo2',['2','9'])" value="赋值">
+    <br>
+    <br>
+    <select id="demo2" multiple="multiple">
+        <optgroup label="中国">
+            <option value="1">天津</option>
+            <option value="2">河北</option>
+        </optgroup>
+        <optgroup label="日本">
+            <option value="5">北海道</option>
+            <option value="6">东京</option>
+        </optgroup>
+        <optgroup label="俄罗斯">
+            <option value="9">莫斯科</option>
+        </optgroup>
+    </select>
+</body>
+
+</html>

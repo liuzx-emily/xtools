@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+    #mindmap_container {
+        width: 800px;
+        height: 800px;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- 说明：容器必须有宽高。并且初始化的时候 容器不能是display:none，如果要隐藏请使用visibility:hidden -->
+    <div id="mindmap_container"></div>
+    <!-- 引入jquery -->
+    <script src="../../js/jquery.min.js"></script>
+    <!-- 引入xTools -->
+    <script src="../xTools.js" auto="0"></script>
+    <!-- 本地调试的时候引用test.js文件，服务器环境下引用main.js -->
+    <script src="js/packages/bower/requirejs/require.js" data-main="js/test.js"></script>
+    <!-- 下面将自动引入main.js文件 -->
+    <!-- <script src="../xTools.js" file="mindTreeDataDriven"></script> -->
+</body>
+
+</html>

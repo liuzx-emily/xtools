@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="webuploader"></script>
+    <style>
+    #zxdialogue_upload {
+        width: 500px;
+        display: none;
+    }
+    #zxdialogue_upload ul {}
+    #zxdialogue_upload li {
+        background: #eee;
+        margin: 5px;
+        padding: 5px;
+        padding-left: 15px;
+    }
+    #zxdialogue_upload li .zxupload-btn-box {
+        margin-top: 5px;
+    }
+    #zxdialogue_upload li .zxupload-btn-box>button {
+        margin-right: 15px;
+    }
+    #zxdialogue_upload li .zxupload-name {}
+    </style>
+</head>
+
+<body>
+    <!-- 上传图片 弹窗 -->
+    <div id="zxdialogue_upload">
+        <div id="zxupload_btn" style="margin:10px">上传</div>
+        <ul></ul>
+    </div>
+    <div>
+        <button class="blue" onclick="zxfn_initFileMap($('#fileupload_btn1'),null)">给附件1赋初始值</button>
+        <button class="blue" onclick="zxfn_getfilemap($('#fileupload_btn1'))">附件1取值</button>
+    </div>
+    <div>
+        附件1：
+        <button id="fileupload_btn1" onclick="zxfn_openFileDialogue(this);" data_uploadparam="1">上传附件1</button>
+    </div>
+    <div style="margin: 20px 0;">
+        附件2：
+        <button onclick="zxfn_openFileDialogue(this);" data_uploadparam="2">上传附件2</button>
+    </div>
+    <div>
+        附件3：
+        <button onclick="zxfn_openFileDialogue(this);" data_uploadparam="3">上传附件2</button>
+    </div>
+    <script>
+    var zxglobal_uploadparam;
+    var zxuploader;
+    $(function() {
+        // 普通上传 弹窗
+        zxfn_inituploader();
+    });
+    // 上传初始化
+    function zxfn_inituploader() {
+        zxuploader = WebUploader.create({
+            // swf文件路径
+            swf: '../../xTools/11_webuploader/Uploader.swf',
+            // 文件接收服务端
+            server: 'data/11_data.json',
+            // 文件上传方式
+            method: 'post',
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {
+                "id": '#zxupload_btn',
+                "multiple": true
+            },
+            // 选完文件后，是否自动上传。
+            auto: true,
+            //限制大小10M，单文件。和error回调配合使用
+            fileSingleSizeLimit: 100 * 1024 * 1024,
+            // 可以重复上传同一个文件
+            duplicate: true
+        });
+        // 一批文件上传前
+        zxuploader.on('filesQueued', function(files) {
+            layer.load();
+        });
+        //  上传前，当validate不通过时。和初始化参数fileSingleSizeLimit配合使用
+        zxuploader.on("error", function(type) {
+            // console.log(type);
+            if (type == "F_EXCEED_SIZE") {
+                layer.msg("附件大小不能超过100M", { icon: 2 });
+            } else if (type == "Q_EXCEED_SIZE_LIMIT") {
+                layer.msg("上传文件总大小过大，请重试！", { icon: 2 });
+            } else {
+                layer.msg("上传失败，请重试", { icon: 2 });
+            }
+        });
+        // 上传前，添加参数
+        zxuploader.on('uploadBeforeSend', function(object, data, header) {
+            data.uploadparam = zxglobal_uploadparam;
+        });
+        // 单个文件上传成功
+        zxuploader.on('uploadSuccess', function(file, response) {
+            // console.log(response);
+            var fileId = response.fileId;
+            var fileName = response.fileName;
+            var html = `
+            <li data-fileId="${fileId}" data-fileName="${fileName}">
+                <div class="zxupload-name">${fileName}</div>
+                <div class="zxupload-btn-box">
+                    <button class="blue" onclick='zxfn_seeFile(this)'>查看</button>
+                    <button class="orange" onclick='zxfn_downFile(this)'>下载</button>
+                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>
+                </div>
+            </li>`;
+            $("#zxdialogue_upload ul").append(html);
+        });
+        // 所有文件上传结束
+        zxuploader.on('uploadFinished', function(file) {
+            layer.closeAll("loading");
+        });
+    }
+    // 打开文件上传弹窗 
+    function zxfn_openFileDialogue(btn) {
+        zxglobal_uploadparam = $(btn).attr("data_uploadparam");
+        var filemap = $(btn).data("filemap") || [];
+        // 生成这个按钮有的附件
+        var html = "";
+        $.each(filemap, function(index, filemap) {
+            html += `
+            <li data-fileId="${filemap.fileId}" data-fileName="${filemap.fileName}">
+                <div class="zxupload-name">${filemap.fileName}</div>
+                <div class="zxupload-btn-box">
+                    <button class="blue" onclick='zxfn_seeFile(this)'>查看</button>
+                    <button class="orange" onclick='zxfn_downFile(this)'>下载</button>
+                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>
+                </div>
+            </li>`;
+        });
+        $("#zxdialogue_upload ul").html(html);
+        // 打开弹窗
+        layer.open({
+            type: 1,
+            content: $("#zxdialogue_upload"),
+            title: "附件",
+            area: ["550px", "550px"],
+            // 不显示右上角的关闭按钮
+            closeBtn: 0,
+            btn: ["关闭"],
+            btnAlign: "c",
+            yes: function yes(index, layero) {
+                var filemap = [];
+                $("#zxdialogue_upload ul li").each(function(index, li) {
+                    filemap.push({
+                        fileId: $(li).attr('data-fileId'),
+                        fileName: $(li).attr('data-fileName')
+                    });
+                });
+                $(btn).data("filemap", filemap);
+                layer.close(index);
+            }
+        });
+        // display:none后，每次显示要refresh一下才行
+        setTimeout(function() {
+            zxuploader.refresh();
+        }, 0);
+    }
+    // 删除附件
+    function zxfn_del_fileli(btn) {
+        var li = $(btn).parents("li");
+        li.remove();
+    }
+    // 下载附件
+    function zxfn_downFile(e) {
+        var li = $(e).parents("li");
+        var fid = $(li).attr('data-fileId');
+        location.href = apiUrl + '/file/download.htmls?fileId=' + fid;
+    }
+    // 查看附件
+    function zxfn_seeFile(e) {
+        var zxfn_filetypeCheck = function(fname) {
+            if (/.png$/.test(fname) || /.jpg$/.test(fname) || /.jpeg$/.test(fname) || /.bmp$/.test(fname) || /.gif$/.test(fname) || /.pdf$/.test(fname)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        var li = $(e).parents("li");
+        var fid = $(li).attr('data-fileId');
+        var fname = $(li).attr('data-fileName');
+        if (zxfn_filetypeCheck(fname)) {
+            window.open(apiUrl + '/file/see.htmls?fileId=' + fid);
+        } else {
+            layer.msg("抱歉，该类型文件需要下载后查看", { icon: 2 });
+        }
+    }
+
+
+    // 取每个按钮的附件
+    function zxfn_getfilemap(btn) {
+        var filemap = JSON.stringify($(btn).data("filemap") || []);
+        console.log(filemap);
+        return filemap;
+    }
+    // 给按钮初始化附件列表
+    function zxfn_initFileMap(btn, filemap) {
+        filemap = filemap || '[{"fileId":"a1","fileName":"图片1.png"},{"fileId":"a2","fileName":"图片2.png"},{"fileId":"a3","fileName":"图片3.png"}]'
+        if (filemap && filemap.length > 0) {
+            filemap = JSON.parse(filemap);
+            var thisbtn_filemap = [];
+            // 存全局
+            $.each(filemap, function(index, file) {
+                var map = {
+                    fileId: file.fileId,
+                    fileName: file.fileName
+                };
+                thisbtn_filemap.push(map);
+            });
+            // 存在btn中
+            $(btn).data("filemap", thisbtn_filemap);
+        } else {
+            $(btn).data("filemap", []);
+        }
+    }
+    </script>
+</body>
+
+</html>

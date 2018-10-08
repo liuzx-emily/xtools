@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <style>
+    body {
+        margin-top: 10px;
+    }
+    .left {
+        display: inline-block;
+        width: 300px;
+        vertical-align: top;
+        font-size: 16px;
+        list-style: disc;
+        background: #0277BD;
+        margin: 0 12px;
+    }
+    ul.left li {
+        display: block;
+        line-height: 30px;
+        border-bottom: 1px solid #ffffff;
+        cursor: pointer;
+        color: #ffffff;
+        padding-left: 10px;
+    }
+    ul.left li:hover {
+        background: #01579B;
+    }
+    iframe {
+        /*width: 400px;*/
+        height: 700px;
+        box-sizing: border-box;
+        padding: 5px;
+        box-shadow: #90CAF9 0px 1px 5px;
+    }
+    </style>
+</head>
+
+<body>
+    <ul class="left">
+        <li>01 font-awesome</li>
+        <li>02 layer</li>
+        <li>03 laydate-01简单</li>
+        <li>03 laydate-02同时绑定多个、动态绑定</li>
+        <li>04 kindeditor</li>
+        <li>05 ztree</li>
+        <li>06 echarts-01树</li>
+        <li>06 echarts-04树(为了扩大点击范围，节点变大且透明化)</li>
+        <li>06 echarts-02柱图折线图</li>
+        <li>06 echarts-03饼环图</li>
+        <li>08 pagination</li>
+        <li>09 zxTable</li>
+        <li>10 select2-01单选</li>
+        <li>10 select2-02多选</li>
+        <li>11 webuploader-01普通上传-页面</li>
+        <li>11 webuploader-02普通上传-弹窗</li>
+        <li>11 webuploader-03分块上传</li>
+        <li>12 switch</li>
+        <li>13 zxTreetable</li>
+    </ul>
+    <iframe frameborder="0"></iframe>
+    <script>
+    $(function() {
+        $("iframe").width($(window).width() - 370);
+        $("ul.left li").click(function() {
+            $("iframe").prop('src', $(this).text() + ".html");
+        });
+        $("ul.left li").eq(0).trigger('click');
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <script src="js/vue.js"></script>
+    <style>
+    body {
+        font-family: "宋体";
+    }
+    #x_backgroundSystem_header {
+        background: #2a3132;
+        height: 65px;
+    }
+    #x_backgroundSystem_main {
+        position: fixed;
+        top: 65px;
+        width: 100%;
+        bottom: 0;
+    }
+    #x_backgroundSystem_sidebar_wrap {
+        width: 250px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: #90afc5;
+        overflow: auto;
+    }
+    #x_backgroundSystem_content_wrap {
+        margin-left: 250px;
+        background: #fafafa;
+        height: 100%;
+        overflow: auto;
+    }
+    </style>
+    <style>
+    #x_topnav {
+        color: #ccc;
+        height: 65px;
+        line-height: 65px;
+        font-size: 16px;
+    }
+    #x_topnav>li {
+        display: inline-block;
+        padding: 0 15px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    #x_topnav>li:hover {
+        color: #fff;
+    }
+    #x_topnav>li.has_subnav {
+        position: relative;
+    }
+    #x_topnav .x_subnav_ul {
+        display: none;
+        position: absolute;
+        top: 50px;
+        left: 35px;
+        width: 200px;
+        z-index: 999;
+        box-shadow: #888 2px 3px 10px 0;
+        border-radius: 2px;
+    }
+    #x_topnav .x_subnav_ul>li {
+        line-height: 24px;
+        border-top: 1px solid #c4d7d9;
+        background: #f3f5fb;
+        text-align: left;
+        padding: 12px 8px;
+        color: #2a3131;
+        font-size: 15px;
+        cursor: pointer;
+    }
+    #x_topnav .x_subnav_ul>li:hover {
+        background: #2a3131;
+        color: #fff;
+        border-top-color: #2a3131;
+    }
+    </style>
+    <style>
+    #x_backgroundSystem_sidebar {
+        font-size: 15px;
+    }
+    #x_backgroundSystem_sidebar>nav>header {
+        font-weight: bold;
+        padding: 20px;
+        font-size: 16px;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_firstlevel_ul {}
+    #x_backgroundSystem_sidebar .x_sidebar_firstlevel_ul>li>header {
+        padding: 15px 10px;
+        position: relative;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_firstlevel_ul>li>header:hover,#x_backgroundSystem_sidebar .x_sidebar_firstlevel_ul>li>header.active {
+        background: #eee;
+        cursor: pointer;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_angledown {
+        position: absolute;
+        top: 16px;
+        right: 30px;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_secondlevel_ul {
+        padding-left: 30px;
+        display: none;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_secondlevel_ul>li {
+        padding: 10px 0;
+    }
+    #x_backgroundSystem_sidebar .x_sidebar_secondlevel_ul>li:hover {
+        color: #fff;
+        cursor: pointer;
+    }
+    </style>
+    <title></title>
+</head>
+
+<body>
+    <header id="x_backgroundSystem_header">
+        <ul id="x_topnav">
+            <li v-for="item in nav" :class="{has_subnav:(item.child&&item.child.length>0)}" @mouseover="show_subnav($event,1)" @mouseout="show_subnav($event,0)">
+                {{item.name}}
+                <ul v-if="item.child&&item.child.length>0" class="x_subnav_ul">
+                    <li v-for="subitem in item.child">
+                        {{subitem.name}}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </header>
+    <section id="x_backgroundSystem_main">
+        <aside id="x_backgroundSystem_sidebar_wrap">
+            <section id="x_backgroundSystem_sidebar">
+                <nav v-if="site.length>0">
+                    <header>站点管理</header>
+                    <ul class="x_sidebar_firstlevel_ul" @click="show_secondlevel_ul">
+                        <li v-for="item in site">
+                            <header>
+                                <i :class="item.icon" class="fa x_sidebar_icon"></i>
+                                <span>{{item.name}}</span>
+                                <i class="fa fa-angle-right fa-lg x_sidebar_angledown"></i>
+                            </header>
+                            <ul v-if="item.child&&item.child.length>0" class="x_sidebar_secondlevel_ul">
+                                <li v-for="subitem in item.child">
+                                    {{subitem.name}}
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <nav v-if="addons.length>0">
+                    <header>站点插件</header>
+                </nav>
+            </section>
+        </aside>
+        <article id="x_backgroundSystem_content_wrap">
+            <section id="x_backgroundSystem_content">
+                近黑色 2a3132 偏暗暗蓝色 336b87 浅蓝雾色 90afc5
+            </section>
+        </article>
+    </section>
+    <script>
+    const vobj_header = new Vue({
+        el: '#x_backgroundSystem_header',
+        data: {
+            nav: [
+                { name: '水果站', child: [] },
+                { name: '站点链接', child: [{ name: '访问站点' }, { name: '预览站点' }] },
+                { name: '插件管理', child: [{ name: '添加插件' }, { name: '管理插件' }] },
+                { name: '系统管理', child: [{ name: '创建新站点' }, { name: '站点管理' }, { name: '权限控制' }, { name: '用户管理' }] },
+                { name: '小明' }
+            ]
+        },
+        methods: {
+            show_subnav: function(e, type) {
+                var oLi = e.currentTarget;
+                if (!$(oLi).hasClass('has_subnav')) {
+                    return;
+                }
+                if (type == 1) {
+                    $(oLi).find(".x_subnav_ul").show();
+                } else {
+                    $(oLi).find(".x_subnav_ul").hide();
+                }
+            },
+        }
+    });
+    const vobj_sidebar = new Vue({
+        el: '#x_backgroundSystem_sidebar',
+        data: {
+            site: [{
+                name: '信息管理',
+                child: [{ name: '内容管理', icon: 'fa-pencil' },
+                    { name: '栏目管理' },
+                    { name: '我的内容' },
+                    { name: '批量转移' },
+                    { name: '内容审核' },
+                    { name: '内容回收站' }
+                ]
+            }],
+            addons: []
+        },
+        methods: {
+            show_secondlevel_ul: function(e) {
+                var oLi = e.currentTarget;
+                $(oLi).toggleClass('active');
+                $(oLi).find(".x_sidebar_angledown").toggleClass('fa-angle-right').toggleClass('fa-angle-down')
+                $(oLi).find(".x_sidebar_secondlevel_ul").toggle();
+
+            },
+        }
+    });
+    </script>
+</body>
+
+</html>

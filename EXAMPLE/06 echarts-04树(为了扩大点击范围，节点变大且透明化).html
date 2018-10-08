@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="echarts2"></script>
+</head>
+
+<body>
+    <pre>        
+        目的：点击文字也能触发点击事件
+        限制：点击事件只能加到节点上
+        所以： 
+            把文字放到节点内部  
+                label的position: 'inside'
+            因为节点大小不能根据文字长度动态控制，所以只能给节点设置一个通用的大小
+                symbol: 'rectangle',
+                symbolSize: [80,30],
+            节点和文字长度不能完美匹配，所以要把节点的颜色设置为透明。normal和emphasis都要设置：
+                color:'rgba(255,255,255,0)',
+                borderColor:'rgba(255,255,255,0)',
+
+
+    </pre>
+    <!-- echarts初始化前，必须给容器指定宽高 -->
+    <div id="demo1" style="width: 500px;height:400px"></div>
+    <script>
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: function(params) {
+                var desc = params.data.description;
+                var name = params.data.name;
+                if ($.checkNull(desc)) {
+                    return name + "：" + $.cutText(desc, 30);
+                } else {
+                    return name;
+                }
+            }
+        },
+        series: [{
+            type: 'tree',
+            rootLocation: { x: '10%', y: '60%' }, // 根节点位置  {x: 'center',y: 10}
+            layerPadding: 70,
+            nodePadding: 1,
+            orient: 'horizontal', // vertical horizontal radial
+            // 所有该类目的节点
+            symbol: 'rectangle',
+            symbolSize: [80,30],
+            // 是否开启滚轮缩放和拖拽漫游，false关闭，true开启，'scale'仅开启滚轮缩放，'move'仅开启拖拽漫游
+            roam: true,            
+            itemStyle: {
+                normal: {
+                    // color:'red',
+                    color:'rgba(255,255,255,0)',
+                    borderColor:'rgba(255,255,255,0)',
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        textStyle: {
+                            color: '#4e5cab',
+                            fontSize: 16
+                        }
+                    },
+                    lineStyle: {
+                        color: '#03A9F4',
+                        width: 0.8,
+                        type: 'curve',
+                        shadowColor: "#71e6f5",
+                        shadowBlur: 5,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                },
+                emphasis: {
+                    color:'rgba(255,255,255,0)',
+                    borderColor:'rgba(255,255,255,0)'
+                }
+            },
+            data: [{
+                name: "太阳系",
+                children: [
+                    { name: "火星aaaaaaaaa" },
+                    { name: "金星" },
+                    { name: "水星" },
+                    {
+                        name: "地球",
+                        children: [{
+                            name: "陆地",
+                            children: [{
+                                name: "亚洲",
+                                children: [{
+                                    name: "中国",
+                                    children: [{
+                                        name: "天津"
+                                    }, {
+                                        name: "北京"
+                                    }, {
+                                        name: "上海"
+                                    }]
+                                }, {
+                                    name: "日本"
+                                }, {
+                                    name: "朝鲜"
+                                }]
+                            }, {
+                                name: "北美洲"
+                            }, {
+                                name: "非洲"
+                            }]
+
+                        }, {
+                            name: "海洋",
+
+                        }]
+                    }
+                ]
+            }]
+        }]
+    };
+    //定义echarts容器
+    var myChart = echarts.init($("#demo1").get(0), 'macarons');
+    myChart.setOption(option);
+    // 添加点击事件
+    var ecConfig = echarts.config;
+    myChart.on(ecConfig.EVENT.CLICK, function(param) {
+        console.log(param);
+        alert(param.data.name);
+    });
+    </script>
+</body>
+
+</html>

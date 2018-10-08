@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="zxtreetable"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="zxTreetable_demo"></div>
+    <script>
+    var zxTable1;
+    initZxTreetable();
+
+    function initZxTreetable() {
+        var param = {
+            data: [{
+                    id: 1,
+                    name: '1小明1',
+                    age: 13,
+                    child: [{
+                        id: 11,
+                        name: '2小明明1',
+                        age: 23,
+                        child: [{
+                                id: 1111,
+                                name: '3小明明明1',
+                                age: 19,
+                                child: [{
+                                    id: 1946572,
+                                    name: '4小明明明明1',
+                                    age: 19,
+                                    child: [{
+                                        id: 15672,
+                                        name: '5小明明明明明1',
+                                        age: 19,
+                                        child: []
+                                    }]
+                                }]
+                            },
+                            { id: 1112, name: '3小明明明2', age: 19, child: [] },
+                            { id: 1113, name: '3小明明明1', age: 19, child: [] },
+                        ]
+                    }]
+                },
+                { id: 2, name: '大力', age: 33, child: [] },
+                {
+                    id: 3,
+                    name: '榛子',
+                    age: 15,
+                    child: [
+                        { id: 3331, name: 'ccc', age: 19, child: [] },
+                        { id: 3332, name: 'ddd', age: 19, child: [] },
+                    ]
+                },
+            ],
+            id: "zxTreetable_demo",
+            url: "data/09_data.json",
+            title: [{
+                name: "姓名",
+                key: "name",
+                width: 30
+            }, {
+                name: "年龄",
+                key: "age",
+                width: 20,
+                sort: true,
+                formatter: function(value, data) {
+                    return value + "岁";
+                }
+            }, {
+                name: '操作',
+                crud: true, // 操作列的crud项必须置为true
+                formatter: function(data) {
+                    var sid = data.sid;
+                    return `
+                    <button class="orange" onclick='opendial_edit("${sid}")'><i class="fa fa-pencil"></i>编辑</button>
+                    <button class="green" onclick='opendial_look("${sid}")'><i class="fa fa-eye"></i>查看</button>
+                    <button class="blue" onclick='fn_resestpw("${sid}")'><i class="fa fa-undo"></i>重置密码</button>
+                    <button class="red" onclick='fn_delete("${sid}")'><i class="fa fa-trash-o"></i>删除</button>
+                `;
+                }
+            }],
+            // 搜索条件
+            searchTerms: { sender_id: "A5X1A" },
+            // 是否开启多选
+            selection: true
+        };
+        zxTable1 = new zxTreetable(param);
+    }
+    </script>
+</body>
+
+</html>

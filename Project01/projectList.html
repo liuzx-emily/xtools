@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/public.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <script src="js/public.js"></script>
+    <title>列表页1</title>
+    <link rel="stylesheet" href="css/list.css">
+    <script src="js/projectList.js"></script>
+</head>
+
+<body>
+    <div id="header-container"></div>
+    <div id="nav-container"></div>
+    <div class="commonBG">
+        <div class="w1200">
+            <div id="breadCrumb">
+                <i class="fa fa-map-marker"></i>当前位置：
+                <a class="breadCrumb-link" href="index.html">首页</a>
+                <span class="seperator">&gt;</span>
+                <span class="breadCrumb-text">列表页1</span>
+            </div>
+            <div id="main-content">
+                <div class="search-condition">
+                    <div class="box">
+                        <label>项目名称：</label>
+                        <input id="proName" type="text">
+                    </div>
+                    <div class="box">
+                        <label>项目位置：</label>
+                        <select id="select_qu" style="width:80px"></select>
+                        <select id="select_jiezhen" style="width:110px"></select>
+                        <select id="select_cun" style="width:170px"></select>
+                    </div>
+                    <div class="box">
+                        <label>巡查时间：</label>
+                        <input id="inspectTime1" class="input-time">至
+                        <input id="inspectTime2" class="input-time">
+                    </div>
+                    <div class="box">
+                        <label>巡查结果：</label>
+                        <input type="radio" name="normal_radio" value="" checked>全部
+                        <input type="radio" name="normal_radio" value="1">有问题
+                        <input type="radio" name="normal_radio" value="0">无问题
+                    </div>
+                    <div class="box">
+                        <label>select2单选：</label>
+                        <select id="select2_danxuan" style="width: 368px">
+                            <option value="">全部</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="box">
+                        <label>select2多选：</label>
+                        <select id="select2_duoxuan" multiple="multiple" style="width: 368px">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="search-btn-box">
+                        <button class="orange big" onclick="search();">搜索</button>
+                        <button class="blue big" onclick="window.location.href='projectAdd.html'">新增</button>
+                    </div>
+                </div>
+                <div class="search-result">
+                    <div id="zxTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-container"></div>
+</body>
+
+</html>

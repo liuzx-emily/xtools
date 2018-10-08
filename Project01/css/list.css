@@ -1,0 +1,57 @@
+.search-condition {
+    padding: 20px 0;
+    position: relative;
+}
+.search-condition .box {
+    display: inline-block;
+    width: 48%;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #777;
+}
+.search-condition .box>label {
+    width: 180px;
+    text-align: right;
+}
+.search-condition .box>input[type="text"] {
+    width: 370px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 8px;
+    border: 1px solid #ddd;
+}
+.search-condition .box>select {
+    border: 1px solid #ddd;
+    padding: 3px;
+}
+.search-condition .box>input[type="radio"] {
+    margin-left: 10px;
+    margin-right: 2px;
+    position: relative;
+    top: 2px;
+}
+.search-condition .box>.input-time {
+    width: 173px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 8px;
+    border: 1px solid #ddd;
+    margin-right: 5px;
+}
+.search-condition .box>.input-time:last-child {
+    margin-right: 0;
+}
+.search-condition .search-btn-box {
+    position: absolute;
+    bottom: -20px;
+    right: 47px;
+    ;
+}
+.search-condition .search-btn-box button {
+    margin-left: 20px;
+}
+.search-result {
+    padding: 20px;
+    width: 98%;
+    margin: 20px auto;
+}

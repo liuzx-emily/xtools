@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="kindeditor"></script>
+</head>
+
+<body>
+    <input type="button" value="取得编辑器中的内容" onclick="getEditorContent()">
+    <input type="button" value="设置编辑器中的内容" onclick="setEditorContent('<h1>aaa</h1>')">
+    <!-- 容器-->
+    <textarea id="editor_demo"></textarea>
+    <script>
+    // 初始化编辑器
+    var ObjEditor = initEditor("editor_demo");
+
+    // 初始化编辑器
+    function initEditor(id) {
+        // 配置项具体查看：http://kindeditor.net/docs/option.html#width
+        var options = {
+            // 初始宽，可以是百分比，也可以是px
+            width: '50%',
+            // 初始高，只能设置px
+            height: '200px',
+            // 0不能改变宽高
+            resizeType: 0,
+            // 上传的后台地址【需要和后台配合】
+            uploadJson: "/notice/uploadImg",
+            // 工具栏
+            items: [
+                'undo', 'redo', '|',
+                'formatblock', 'fontname', 'fontsize', '|',
+                'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|',
+                'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', 'insertorderedlist', 'insertunorderedlist', '|',
+                'emoticons', 'image', 'link', 'table', 'hr', 'preview'
+            ]
+        };
+        return KindEditor.create('#' + id, options);
+    }
+
+    // 取得编辑器中的内容
+    function getEditorContent() {
+        var html = ObjEditor.html();
+        alert(html);
+    }
+    // 设置编辑器中的内容
+    function setEditorContent(html) {
+        ObjEditor.html(html);
+    }
+    </script>
+</body>
+
+</html>

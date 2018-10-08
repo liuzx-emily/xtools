@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="webuploader"></script>
+    <style>
+    #zxdialogue_upload {
+        width: 500px;
+        display: none;
+    }
+    #zxdialogue_upload ul {}
+    #zxdialogue_upload li {
+        background: #eee;
+        margin: 5px;
+        padding: 5px;
+        padding-left: 15px;
+    }
+    #zxdialogue_upload li .zxupload-btn-box {
+        margin-top: 5px;
+    }
+    #zxdialogue_upload li .zxupload-btn-box>button {
+        margin-right: 15px;
+    }
+    #zxdialogue_upload li .zxupload-name {}
+    </style>
+</head>
+
+<body>
+    <div>
+        附件1：
+        <div id="fileupload_btn1" class="fileupload_btn" data_uploadparam="1">上传附件1</div>
+        <div id="fileupload_box1">
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div>
+        附件2：
+        <div id="fileupload_btn2" class="fileupload_btn" data_uploadparam="2">上传附件2</div>
+        <div id="fileupload_box2">
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div>
+        附件3：
+        <div id="fileupload_btn3" class="fileupload_btn" data_uploadparam="3">上传附件3</div>
+        <div id="fileupload_box3">
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <script>
+    $(function() {
+        zxfn_inituploader("fileupload_btn1", $("#fileupload_box1"));
+        zxfn_inituploader("fileupload_btn2", $("#fileupload_box2"));
+        zxfn_inituploader("fileupload_btn3", $("#fileupload_box3"));
+    });
+    // 上传初始化1
+    function zxfn_inituploader(uploadBtnId, boxContainer) {
+        var zxuploader = WebUploader.create({
+            // swf文件路径
+            swf: '../../xTools/11_webuploader/Uploader.swf',
+            // 文件接收服务端
+            server: 'data/11_data.json',
+            // 文件上传方式
+            method: 'post',
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {
+                "id": '#' + uploadBtnId,
+                "multiple": true
+            },
+            // 选完文件后，是否自动上传。
+            auto: true,
+            //限制大小10M，单文件。和error回调配合使用
+            fileSingleSizeLimit: 100 * 1024 * 1024,
+            // 可以重复上传同一个文件
+            duplicate: true
+        });
+        // 一批文件上传前
+        zxuploader.on('filesQueued', function(files) {
+            layer.load();
+        });
+        //  上传前，当validate不通过时。和初始化参数fileSingleSizeLimit配合使用
+        zxuploader.on("error", function(type) {
+            // console.log(type);
+            if (type == "F_EXCEED_SIZE") {
+                layer.msg("附件大小不能超过100M", { icon: 2 });
+            } else if (type == "Q_EXCEED_SIZE_LIMIT") {
+                layer.msg("上传文件总大小过大，请重试！", { icon: 2 });
+            } else {
+                layer.msg("上传失败，请重试", { icon: 2 });
+            }
+        });
+        // 上传前，添加参数
+        zxuploader.on('uploadBeforeSend', function(object, data, header) {
+
+            data.uploadparam = $("#" + uploadBtnId).attr("data_uploadparam");
+        });
+        // 单个文件上传成功
+        zxuploader.on('uploadSuccess', function(file, response) {
+            // console.log(response);
+            var fileId = response.fileId;
+            var fileName = response.fileName;
+            var html = `
+            <li data-fileId="${fileId}" data-fileName="${fileName}">
+                <div class="zxupload-name">${fileName}</div>
+                <div class="zxupload-btn-box">
+                    <button class="blue" onclick='zxfn_seeFile(this)'>查看</button>
+                    <button class="orange" onclick='zxfn_downFile(this)'>下载</button>
+                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>
+                </div>
+            </li>`;
+            // var html =
+            //     "<li data-fileId='"+fileId+"' data-fileName='"+fileName+"'>"+
+            //     "    <div class='zxupload-name'>'"+fileName+"'</div>"+
+            //     "    <div class='zxupload-btn-box'>"+
+            //     "        <button class='blue' onclick='zxfn_seeFile(this)'>查看</button>"+
+            //     "        <button class='orange' onclick='zxfn_downFile(this)'>下载</button>"+
+            //     "        <button class='red fileupload_delete_btn' onclick='zxfn_del_fileli(this)'>删除</button>"+
+            //     "    </div>"+
+            //     "</li>";
+            $(boxContainer).find(" ul").append(html);
+        });
+        // 所有文件上传结束
+        zxuploader.on('uploadFinished', function(file) {
+            layer.closeAll("loading");
+        });
+    }
+    // 删除附件
+    function zxfn_del_fileli(btn) {
+        var li = $(btn).parents("li");
+        li.remove();
+    }
+    // 下载附件
+    function zxfn_downFile(e) {
+        var li = $(e).parents("li");
+        var fid = $(li).attr('data-fileId');
+        location.href = apiUrl + '/file/download.htmls?fileId=' + fid;
+    }
+    // 查看附件
+    function zxfn_seeFile(e) {
+        var zxfn_filetypeCheck = function(fname) {
+            if (/.png$/.test(fname) || /.jpg$/.test(fname) || /.jpeg$/.test(fname) || /.bmp$/.test(fname) || /.gif$/.test(fname) || /.pdf$/.test(fname)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        var li = $(e).parents("li");
+        var fid = $(li).attr('data-fileId');
+        var fname = $(li).attr('data-fileName');
+        if (zxfn_filetypeCheck(fname)) {
+            window.open(apiUrl + '/file/see.htmls?fileId=' + fid);
+        } else {
+            layer.msg("抱歉，该类型文件需要下载后查看", { icon: 2 });
+        }
+    }
+    </script>
+</body>
+
+</html>

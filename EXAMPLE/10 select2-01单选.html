@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <style>
+    hr {
+
+        border: 5px solid #E0F7FA;
+        margin: 20px 0;
+    }
+    </style>
+    <script>
+    $(function() {
+        initSelect2_demo1();
+        initSelect2_demo2();
+        initSelect2_demo3();
+    });
+
+    function initSelect2_demo1() {
+        var zxselect2_data = [{
+                pid: 0,
+                name: '大象'
+            },
+            {
+                pid: 1,
+                name: '苹果'
+            },
+            {
+                pid: 2,
+                name: '橘子'
+            },
+            {
+                pid: 3,
+                name: '鸭蛋'
+            },
+            {
+                pid: 4,
+                name: '榴莲'
+            }
+        ];
+        var data = zxfn_chaosDataFormatToSelect2Data(zxselect2_data, "pid", "name");
+        // 监听select值变化
+        $('#zxselect2_demo1').change(function() {
+            var value = $(this).val();
+            if (value == null) {
+                console.log("清空选择项了");
+            } else {
+                console.log("变了", $(this).val());
+            }
+        });
+        // 初始化
+        $('#zxselect2_demo1').select2({
+            width: "500px",
+            // 指定语言为中文
+            language: 'zh-CN',
+            // 说明：pid对应的值是option的value，name对应的值就是option的文本
+            data: data
+        });
+        // 赋默认值：value为3的（注意：这里3必须有引号）
+        zxfn_setSelect2("zxselect2_demo1", "3");
+        // 赋默认值：第一个
+        if (data.length > 0) {
+            zxfn_setSelect2("zxselect2_demo1", data[0].id + "");
+        }
+    }
+
+    function initSelect2_demo2() {
+        // 初始化
+        $('#zxselect2_demo2').select2({
+            width: "500px",
+            // 指定语言为中文
+            language: 'zh-CN'
+        });
+    }
+
+    function initSelect2_demo3() {
+        var zxselect2_data = [{
+                pid: "0",
+                name: '大象',
+                parent: "5"
+            }, {
+                pid: "5",
+                name: '动物',
+                parent: "#"
+            }, {
+                pid: "6",
+                name: '植物',
+                parent: "#"
+            },
+            {
+                pid: "1",
+                name: '苹果',
+                parent: "6"
+            },
+            {
+                pid: "2",
+                name: '橘子',
+                parent: "6"
+            },
+            {
+                pid: "3",
+                name: '鸭蛋',
+                parent: "6"
+            },
+            {
+                pid: "4",
+                name: '榴莲',
+                parent: "6"
+            }
+        ];
+        var data = zxfn_chaosDataFormatToSelect2Data_hasoptgroup(zxselect2_data, "pid", "name", "parent", "#");
+        // 监听select值变化
+        $('#zxselect2_demo3').change(function() {
+            var value = $(this).val();
+            if (value == null) {
+                console.log("清空选择项了");
+            } else {
+                console.log("变了", $(this).val());
+            }
+        });
+        // 初始化
+        $('#zxselect2_demo3').select2({
+            width: "500px",
+            // 指定语言为中文
+            language: 'zh-CN',
+            // 说明：pid对应的值是option的value，name对应的值就是option的文本
+            data: data
+        });
+        // 赋默认值：value为3的（注意：这里3必须有引号）
+        zxfn_setSelect2("zxselect2_demo3", "3");
+        // 赋默认值：按位置选
+        if (data.length > 0) {
+            zxfn_setSelect2("zxselect2_demo3", data[1].children[1].id + "");
+        }
+    }
+    // 禁用
+    function zxfn_disableSelect2(id) {
+        $("#" + id).prop({ disabled: true });
+    }
+    // 启用
+    function zxfn_enableSelect2(id) {
+        $("#" + id).prop({ disabled: false });
+    }
+    // 取值
+    function zxfn_getSelect2(id) {
+        var res = $("#" + id).val();
+        alert(res);
+    }
+    // 赋值
+    function zxfn_setSelect2(id, value) {
+        $("#" + id).val(value).trigger("change");
+    }
+    // 清空选择项
+    function zxfn_clearSelectedSelect2(id) {
+        $("#" + id).val(null).trigger("change");
+    }
+    // 转换成select2需要的格式
+    function zxfn_chaosDataFormatToSelect2Data(chaosData, idKey, textKey) {
+        var data = [];
+        $.each(chaosData, function(index, item) {
+            var obj = {};
+            obj.id = item[idKey];
+            obj.text = item[textKey];
+            data.push(obj);
+        });
+        return data;
+    }
+    // 转换成select2需要的格式，有optgroup
+    function zxfn_chaosDataFormatToSelect2Data_hasoptgroup(chaosData, idKey, textKey, parentKey, rootId) {
+
+        var data = chaosData.filter(function(item) {
+            return item[parentKey] == rootId;
+        }).map(function(item) {
+            return {
+                id: item[idKey],
+                text: item[textKey],
+                children: []
+            };
+        });
+        chaosData.filter(function(item) {
+            return item[parentKey] != rootId;
+        }).forEach(function(son_item) {
+            data.forEach(function(parent_item) {
+                (parent_item.id == son_item[parentKey]) && (parent_item.children.push({
+                    id: son_item[idKey],
+                    text: son_item[textKey]
+                }))
+            })
+        });
+
+        return data;
+    }
+    </script>
+</head>
+
+<body>
+    <input type="button" onclick="zxfn_disableSelect2('zxselect2_demo1')" value="禁用">
+    <input type="button" onclick="zxfn_enableSelect2('zxselect2_demo1')" value="启用">
+    <input type="button" onclick="zxfn_getSelect2('zxselect2_demo1')" value="取值">
+    <input type="button" onclick="zxfn_setSelect2('zxselect2_demo1','2')" value="赋值">
+    <input type="button" onclick="zxfn_clearSelectedSelect2('zxselect2_demo1')" value="清空选择项">
+    <hr>
+    <p>data在初始化时赋值</p>
+    <select id="zxselect2_demo1"></select>
+    <hr>
+    <p>data在初始化时赋值 有optgroup</p>
+    <select id="zxselect2_demo3"></select>
+    <hr>
+    <p>data在html中写</p>
+    <select id="zxselect2_demo2">
+        <option value="12">哈哈</option>
+        <option value="13">丫丫</option>
+    </select>
+</body>
+
+</html>

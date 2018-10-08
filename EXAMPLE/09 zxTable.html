@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+</head>
+
+<body>
+    <button class="blue" onclick="getCurrentSelected()">获取当前选中项</button>
+    <div id="zxTable_demo"></div>
+    <script>
+    var zxTable1;
+    $(function() {
+        initZxTable();
+    });
+    // 初始化
+    function initZxTable() {
+        var param = {
+            id: "zxTable_demo",
+            url: "./data/09_data.json",
+            title: [{
+                name: "姓名",
+                key: "name",
+                width: 30
+            }, {
+                name: "年龄",
+                key: "age",
+                width: 10
+            }, {
+                name: "性别",
+                key: "gender",
+                width: 10
+            }, {
+                name: "时间",
+                key: "date",
+                width: 20,
+                sort: true,
+                formatter: function(value, data) {
+                    // 第1个参数value，是根据key取到的值
+                    // 第二个参数是data，是当前行数据
+                    return $.formatDate(value);
+                }
+            }, {
+                name: '操作',
+                crud: true, // 操作列的crud项必须置为true
+                formatter: function(data) {
+                    // 只有一个参数data,是当前行数据
+                    var sid = data.sid;
+                    return `<a title='详情' onclick='detail("${sid}")'>详情</a>`;
+                }
+            }],
+            detail: {
+                width: 2, // "+"列的列宽(%) 类型：int，默认2
+                formatter: function(data) { // data是当前行数据
+                    return `<p style="color:hotpink;">${data.name}：${data.gender}</p>`;
+                }
+            },
+            // 搜索条件
+            searchTerms: { sender_id: "A5X1A" },
+            // 开启后端排序
+            sort: 'back',
+            // 每页显示的条数，值务必对应dataLimits参数的选项，默认10
+            dataLimit: 2,
+            // 每页条数的选择项，默认[5,10,20,50]
+            dataLimits: [2, 5, 10],
+            // 在最左侧添加一个序号列
+            auto_index: {
+                show: true, // 是否启用此功能 类型：boolean，默认false
+                title: '序号', // 该列的标题 类型：string，默认“序号”
+                width: 5 // 列宽(%) 类型：int，默认5
+            },
+            // 单选多选
+            selection: {
+                type: 'checkbox', // 方式 类型：string，可选值radio checkbox，默认不开启选择功能
+                pid: ['id', 'name'], // 数据标识符 类型：[ string , string ... ]
+                colomn_shown: true, // 是否显示按钮列 类型：boolean，默认false
+                width: 5 // 列宽(%) 类型：int，默认2
+            }
+
+
+        };
+        zxTable1 = new zxTable(param);
+    }
+
+    function getCurrentSelected() {
+        var arr = zxTable1.get_selected('id');
+        console.log(arr);
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+/* ------------------------------- 全局的一些公共样式 -------------------------------*/
+
+body {
+    min-width: 1200px;
+    font-family: tahoma, arial, "Hiragino Sans GB", 宋体, sans-serif;
+    font-size: 14px;
+}
+.w1200 {
+    display: block;
+    width: 1200px;
+    margin: 0 auto;
+}
+.commonBG {
+    background: #ecf1f5;
+}
+.commonBG .w1200 {
+    background: #fcfcfc;
+    padding: 20px 15px 40px;
+    font-size: 14px;
+}
+table.x-table th {
+    background: #009688!important;
+}
+
+
+
+
+
+
+/* ---------------------------- 顶部信息条 ---------------------------- */
+
+#topbar {
+    background: #f5f5f5;
+    line-height: 36px;
+    font-size: 12px;
+    color: #6c6c6c;
+    text-align: right;
+}
+#topbar a {
+    font-size: 12px;
+    color: #6c6c6c;
+}
+#topbar a:hover {
+    text-decoration: underline;
+    color: #ff4400;
+}
+#topbar_hasnotlogged, #topbar_alreadylogged {
+    display: inline-block;
+}
+#topbar_userbox {
+    display: inline-block;
+    position: relative;
+    border: none;
+}
+
+/*分隔线*/
+
+#topbar i.line {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background: #ccc;
+    margin: 0 10px;
+    position: relative;
+    top: 3px;
+}
+
+/*下拉菜单*/
+
+#topbar .topbar_dropdown_ul {
+    display: none;
+    position: absolute;
+    top: 36px;
+    left: -9px;
+    width: 200px;
+    z-index: 999;
+    box-shadow: #888 2px 3px 10px 0;
+    border-radius: 2px;
+}
+#topbar .topbar_dropdown_ul>li {
+    line-height: 18px;
+    border-top: 1px solid #e4e4e4;
+    background: #fafafa;
+    text-align: left;
+    padding: 6px;
+    cursor: auto;
+}
+#topbar .topbar_dropdown_ul>li>a {
+    font-size: 13px;
+    color: #0b6156;
+    display: block;
+    text-decoration: none;
+}
+#topbar .topbar_dropdown_ul>li.specialBottomLine {
+    background: #eee;
+    text-align: center;
+}
+#topbar .topbar_dropdown_ul>li.specialBottomLine i.fa {
+    margin-right: 8px;
+}
+#topbar .topbar_dropdown_ul>li:hover, #topbar .topbar_dropdown_ul>li.specialBottomLine:hover {
+    background: #308a81;
+}
+#topbar .topbar_dropdown_ul>li:hover>a {
+    color: white;
+}
+
+/* ---------------------------- header部分 ---------------------------- */
+
+#header {
+    width: 100%;
+    background: #E0F2F1;
+    padding: 55px 0;
+}
+#header .w1200 {
+    position: relative;
+}
+.header-left {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 20px;
+}
+.header-left>a {
+    display: block;
+}
+.header-left>a>img {
+    display: block;
+    height: 75px;
+}
+
+
+
+/* ---------------------------- 公共导航 ---------------------------- */
+
+#nav {
+    width: 100%;
+    /*height: 55px;*/
+    background: #009688;
+    font-size: 0;
+}
+#nav ul {
+    /*overflow: hidden;*/
+}
+#nav ul li {
+    display: inline-block;
+    margin-right: 5px;
+}
+#nav ul li a {
+    display: block;
+    color: white;
+    font-size: 18px;
+    padding: 15px 20px;
+}
+#nav ul li.active, #nav ul li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#nav ul.first-level-nav>li {
+    position: relative;
+}
+#nav ul.first-level-nav>li:hover ul.second-level-nav {
+    display: block;
+}
+#nav ul.second-level-nav {
+    display: none;
+    position: absolute;
+    z-index: 999999999;
+    width: 100%;
+    background: #009688;
+}
+#nav ul.second-level-nav>li {
+    display: block;
+    border-top: 1px solid #68b9b2;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+#nav ul.second-level-nav>li>a {
+    padding: 8px 0;
+}
+
+
+/* ------------------------------- 面包屑导航 -------------------------------*/
+
+#breadCrumb {
+    line-height: 30px;
+    background: #f7f7f7;
+    color: #777;
+    font-size: 13px;
+}
+#breadCrumb b {
+    margin: 0 10px;
+}
+#breadCrumb i {
+    color: #4788d6;
+    margin: 0 10px 0 10px;
+}
+#breadCrumb a {
+    color: #2196F3;
+}
+#breadCrumb a:hover {
+    text-decoration: underline;
+    color: #00bcd4;
+}
+
+
+
+
+/* ------------------------------- 底部 ------------------------------- */
+
+#footer {
+    padding: 10px;
+    background: #009688;
+}
+#footer p {
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+}
+#footer p a {
+    color: #fff;
+}
+#footer p a:hover {
+    color: #ccc;
+}

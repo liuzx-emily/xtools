@@ -1,0 +1,84 @@
+﻿/* ------------------------------- 样式重置 reset -------------------------------*/
+
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, button, input, textarea, th, td {
+    margin: 0;
+    padding: 0;
+}
+ul, ol {
+    list-style: none;
+}
+a, a:hover {
+    text-decoration: none;
+    color: #000;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+label,span,input{
+    display: inline-block;
+}
+img{
+    border: none;
+}
+/* ------------------------------- 按钮 -------------------------------*/
+input[type='button'], button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    padding: 3px 10px;
+    font-size: 12px;
+}
+input[type='button'].big, button.big {
+    padding: 6px 15px;
+    font-size: 15px;
+    letter-spacing: 2px;
+}
+input[type='button'].blue, button.blue {
+    color: white;
+    background: #03a9f4;
+    border-radius: 2px;
+}
+input[type='button'].blue:hover, button.blue:hover {
+    background:#0277BD;
+}
+input[type='button'].darkblue, button.darkblue {
+    color: white;
+    background: #0068bb;
+    border-radius: 2px;
+}
+input[type='button'].darkblue:hover, button.darkblue:hover {
+    background:#004780;
+}
+input[type='button'].yellow, button.yellow {
+    color: white;
+    background: #ffc107;
+    border-radius: 2px;
+}
+input[type='button'].yellow:hover, button.yellow:hover {
+    background:#FF9800;
+}
+input[type='button'].orange, button.orange {
+    color: white;
+    background: #FFB300;
+    border-radius: 2px;
+}
+input[type='button'].orange:hover, button.orange:hover {
+    background:#FF9800;
+}
+input[type='button'].green, button.green {
+    color: white;
+    background: #12ca89;
+    border-radius: 2px;
+}
+input[type='button'].green:hover, button.green:hover {
+    background:#0fae73;
+}
+input[type='button'].red, button.red {
+    color: white;
+    background: #FF7043;
+    border-radius: 2px;
+}
+input[type='button'].red:hover, button.red:hover {
+    background:#f00;
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 先引入jquery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
+    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+</head>
+
+<body>
+    <pre style="font-size: 16px;background: #eee;">
+        <a href="http://www.jq22.com/yanshi5697" style="text-decoration: underline;">API点这里</a>
+        1 pageSize提到全局变量，这样开发时测试比较方便
+        2 加载数据的函数initData()，必须要有两个参数：
+            2.1 当前页数pageNum
+            2.2 是否初始化分页initPaging
+        3 页面初始化的时候：pageNum是1，initPaging是true，searchParam是新的
+          跳页的时候：pageNum是当前点击页数，initPaging是false，searchParam用之前的
+          搜索的时候：pageNum是1，initPaging是true，searchParam是新的
+    </pre>
+    <button class="big blue" onclick="initData(1,true,{searchParam1:'aa',searchParam2:'bb'})">搜索</button>
+    <div id="demo1" style="border:1px solid red;width:500px;">
+        <!-- 有数据 -->
+        <div class="doHaveData">
+            <ul></ul>
+            <div class="notice_page"></div>
+        </div>
+        <!-- 没数据时 -->
+        <div class="donnotHaveData">暂无数据</div>
+    </div>
+    <script>
+    var pageSize = 10;
+    $(function() {
+        initData(1, true);
+    });
+    var initDataLoadLayer;
+
+    function initData(pageNum, initPaging, searchParam) {
+        // "其他搜索条件"，要放到下面的页数跳转回调中
+        searchParam = searchParam || {};
+        initDataLoadLayer = layer.load();
+        $.ajax({
+            url: 'data/08_data.json',
+            type: 'get',
+            data: {
+                // pageNum要看后台是不是需要-1
+                pageNum: pageNum - 1,
+                pageSize: pageSize,
+                sort: "create_time",
+                order: "desc",
+                searchParam1: searchParam.searchParam1,
+                searchParam2: searchParam.searchParam2
+            },
+            success: function(res) {
+                var count = res.count;
+                // 如果没有数据，则隐藏表格和分页
+                if (count === 0) {
+                    $("#demo1 .doHaveData").hide();
+                    $("#demo1 .donnotHaveData").show();
+                    layer.close(initDataLoadLayer);
+                    return;
+                }
+                // 有数据，则加载数据和分页，并显示
+                var data = res.data;
+                var html = "";
+                $.each(data, function(index, item) {
+                    html += `
+                        <li>
+                            <span>姓名：${item.name}</span>
+                            <span>年龄：${item.age}</span>
+                            <span>性别：${item.gender}</span>
+                        </li>`;
+                });
+                $("#demo1 .doHaveData ul").html(html);
+                // 判断是否需要初始化分页
+                if (initPaging) {
+                    $('#demo1 .doHaveData .notice_page').pagination({
+                        // 每页条数
+                        showData: pageSize,
+                        // 总条数
+                        totalData: count,
+                        // 是否开启输入页数跳转
+                        jump: true,
+                        // 是否开启首页和末页，值为boolean
+                        coping: true,
+                        callback: function(api) {
+                            // api.getCurrent()的值从1开始
+                            var pageNum = api.getCurrent();
+                            // 跳页：(1)把当前页数传过去 (2)不需要初始化分页 (3)带着这次的"其他搜索条件"
+                            initData(pageNum, false, searchParam);
+                        }
+                    });
+                }
+                $("#demo1 .doHaveData").show();
+                $("#demo1 .donnotHaveData").hide();
+                layer.close(initDataLoadLayer);
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

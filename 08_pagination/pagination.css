@@ -1,0 +1,31 @@
+.xTools-paging {
+    margin: 10px 0px;
+    text-align: center;
+    line-height: 28px;
+}
+.xTools-paging a, .xTools-paging span, .xTools-paging input[type="text"] {
+    display: inline-block;
+    height: 26px;
+    margin-left: 5px;
+    padding: 0 10px;
+    color: #666;
+    line-height: 26px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #dedede;
+}
+.xTools-paging span.active {
+    background-color: #4788d6;
+    border: 1px solid #2a68bc;
+    color: #fff
+}
+.xTools-paging span.totalNum {
+    border: none;
+}
+.xTools-paging input[type="text"] {
+    width: 25px;
+}
+.xTools-paging input.jump-ipt{
+    width: 50px;
+}
