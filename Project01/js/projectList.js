@@ -53,11 +53,8 @@ function initTable() {
             name: "时间",
             key: "time",
             sort: true,
-            formatter: function(value, key) {
-                // 第1个参数value，是根据key取到的值
+            formatter: function(value, data) {
                 return $.formatDate(value);
-                // 第二个参数是index，可以根据它取到当前行数据
-                // var data= xTable.data[index];
             }
         }, {
             name: "结果",
@@ -66,9 +63,7 @@ function initTable() {
         }, {
             name: '操作',
             crud: true, // 操作列的crud项必须置为true
-            formatter: function(index) {
-                // 只有一个参数index，可以根据它取到当前行数据
-                var data = xTable.data[index];
+            formatter: function(data) {
                 var id = data.id;
                 return `
                 <button class='blue' onclick='detail("${id}")'>详情</button>

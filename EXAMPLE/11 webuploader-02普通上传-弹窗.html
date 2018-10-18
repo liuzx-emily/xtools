@@ -104,15 +104,15 @@
             // console.log(response);
             var fileId = response.fileId;
             var fileName = response.fileName;
-            var html = `
-            <li data-fileId="${fileId}" data-fileName="${fileName}">
-                <div class="zxupload-name">${fileName}</div>
-                <div class="zxupload-btn-box">
-                    <button class="blue" onclick='zxfn_seeFile(this)'>查看</button>
-                    <button class="orange" onclick='zxfn_downFile(this)'>下载</button>
-                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>
-                </div>
-            </li>`;
+            var html = '' +
+                '            <li data-fileId="' + (fileId) + '" data-fileName="' + (fileName) + '">' +
+                '                <div class="zxupload-name">' + (fileName) + '</div>' +
+                '                <div class="zxupload-btn-box">' +
+                '                    <button class="blue" onclick=\'zxfn_seeFile(this)\'>查看</button>' +
+                '                    <button class="orange" onclick=\'zxfn_downFile(this)\'>下载</button>' +
+                '                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>' +
+                '                </div>' +
+                '            </li>';
             $("#zxdialogue_upload ul").append(html);
         });
         // 所有文件上传结束
@@ -127,15 +127,15 @@
         // 生成这个按钮有的附件
         var html = "";
         $.each(filemap, function(index, filemap) {
-            html += `
-            <li data-fileId="${filemap.fileId}" data-fileName="${filemap.fileName}">
-                <div class="zxupload-name">${filemap.fileName}</div>
-                <div class="zxupload-btn-box">
-                    <button class="blue" onclick='zxfn_seeFile(this)'>查看</button>
-                    <button class="orange" onclick='zxfn_downFile(this)'>下载</button>
-                    <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>
-                </div>
-            </li>`;
+            html +=
+                '<li data-fileId="' + (filemap.fileId) + '" data-fileName="' + (filemap.fileName) + '">' +
+                '    <div class="zxupload-name">' + (filemap.fileName) + '</div>' +
+                '    <div class="zxupload-btn-box">' +
+                '        <button class="blue" onclick=\'zxfn_seeFile(this)\'>查看</button>' +
+                '        <button class="orange" onclick=\'zxfn_downFile(this)\'>下载</button>' +
+                '        <button class="red fileupload_delete_btn" onclick="zxfn_del_fileli(this)">删除</button>' +
+                '    </div>' +
+                '</li>';
         });
         $("#zxdialogue_upload ul").html(html);
         // 打开弹窗

@@ -6,7 +6,7 @@
     <!-- 先引入jquery -->
     <script src="js/jquery.min.js"></script>
     <!-- 再引入xTools，注意要在js中修正xTools文件夹的地址 -->
-    <script src="../xTools.js" fixing-address="../../xTools/"></script>
+    <script src="../xTools.js" fixing-address="../../xTools/" more-plugins="jq22page"></script>
 </head>
 
 <body>
@@ -66,12 +66,12 @@
                 var data = res.data;
                 var html = "";
                 $.each(data, function(index, item) {
-                    html += `
-                        <li>
-                            <span>姓名：${item.name}</span>
-                            <span>年龄：${item.age}</span>
-                            <span>性别：${item.gender}</span>
-                        </li>`;
+                    html +=
+                        '<li>' +
+                        '    <span>姓名：' + (item.name) + '</span>' +
+                        '    <span>年龄：' + (item.age) + '</span>' +
+                        '    <span>性别：' + (item.gender) + '</span>' +
+                        '</li>';
                 });
                 $("#demo1 .doHaveData ul").html(html);
                 // 判断是否需要初始化分页

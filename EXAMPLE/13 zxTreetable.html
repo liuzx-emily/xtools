@@ -13,84 +13,49 @@
 <body>
     <div id="zxTreetable_demo"></div>
     <script>
-    var zxTable1;
+    var zxTreeTable1;
     initZxTreetable();
 
     function initZxTreetable() {
+        var deptData = [{ "deptId": "1", "parentId": null, "name": "tjrock" },
+            { "deptId": "2", "parentId": "1", "name": "水果" },
+            { "deptId": "2c3404494675429c96ce2a2e4c482ff5", "parentId": "2", "name": "榴莲部门" },
+            { "deptId": "4", "parentId": "2", "name": "苹果部门" },
+            { "deptId": "0bcbf13feeb940b48dff4c0f51c70cf5", "parentId": "4", "name": "小苹果" },
+            { "deptId": "1aaca1b93f464f63bcd9ba90ab3161f6", "parentId": "4", "name": "大苹果" },
+            { "deptId": "6", "parentId": "2", "name": "香蕉部门" },
+            { "deptId": "7", "parentId": "2", "name": "橘子部门" },
+            { "deptId": "3", "parentId": "1", "name": "主食" },
+            { "deptId": "365d6c578d5f4a2581395fb9aa734366", "parentId": "3", "name": "面条" },
+            { "deptId": "8", "parentId": "3", "name": "米饭部门" },
+            { "deptId": "5", "parentId": "1", "name": "蔬菜" }
+        ];
         var param = {
-            data: [{
-                    id: 1,
-                    name: '1小明1',
-                    age: 13,
-                    child: [{
-                        id: 11,
-                        name: '2小明明1',
-                        age: 23,
-                        child: [{
-                                id: 1111,
-                                name: '3小明明明1',
-                                age: 19,
-                                child: [{
-                                    id: 1946572,
-                                    name: '4小明明明明1',
-                                    age: 19,
-                                    child: [{
-                                        id: 15672,
-                                        name: '5小明明明明明1',
-                                        age: 19,
-                                        child: []
-                                    }]
-                                }]
-                            },
-                            { id: 1112, name: '3小明明明2', age: 19, child: [] },
-                            { id: 1113, name: '3小明明明1', age: 19, child: [] },
-                        ]
-                    }]
-                },
-                { id: 2, name: '大力', age: 33, child: [] },
-                {
-                    id: 3,
-                    name: '榛子',
-                    age: 15,
-                    child: [
-                        { id: 3331, name: 'ccc', age: 19, child: [] },
-                        { id: 3332, name: 'ddd', age: 19, child: [] },
-                    ]
-                },
-            ],
+            // 将平级的arr转成树形结构
+            data: deptData.convert_to_treedata({ before_idkey: "deptId" }),
+            // id的key值
+            idKey: "deptId",
+            // child的key值
+            childKey: "child",
             id: "zxTreetable_demo",
-            url: "data/09_data.json",
             title: [{
-                name: "姓名",
+                name: "部门",
                 key: "name",
-                width: 30
-            }, {
-                name: "年龄",
-                key: "age",
-                width: 20,
-                sort: true,
-                formatter: function(value, data) {
-                    return value + "岁";
-                }
+                width: 50
             }, {
                 name: '操作',
                 crud: true, // 操作列的crud项必须置为true
                 formatter: function(data) {
-                    var sid = data.sid;
-                    return `
-                    <button class="orange" onclick='opendial_edit("${sid}")'><i class="fa fa-pencil"></i>编辑</button>
-                    <button class="green" onclick='opendial_look("${sid}")'><i class="fa fa-eye"></i>查看</button>
-                    <button class="blue" onclick='fn_resestpw("${sid}")'><i class="fa fa-undo"></i>重置密码</button>
-                    <button class="red" onclick='fn_delete("${sid}")'><i class="fa fa-trash-o"></i>删除</button>
-                `;
+                    var sid = data.deptId;
+                    return '<button class="orange" onclick=\'opendial_edit("' + (sid) + '")\'><i class="fa fa-pencil"></i>编辑</button>' +
+                        '   <button class="green" onclick=\'opendial_look("' + (sid) + '")\'><i class="fa fa-eye"></i>查看</button>' +
+                        '   <button class="red" onclick=\'fn_delete("' + (sid) + '")\'><i class="fa fa-trash-o"></i>删除</button>';
                 }
             }],
-            // 搜索条件
-            searchTerms: { sender_id: "A5X1A" },
             // 是否开启多选
             selection: true
         };
-        zxTable1 = new zxTreetable(param);
+        zxTreeTable1 = new zxTreetable(param);
     }
     </script>
 </body>

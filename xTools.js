@@ -10,7 +10,7 @@
     // script标签
     var oScriptTag = $("script[src$='xTools.js']");
     // 默认引入的插件列表
-    var DEFAULT_PLUGINLIST = "fontawesome layer laydate jq22page zxtable select2 switch";
+    var DEFAULT_PLUGINLIST = "fontawesome layer zxtable";
     // xTools文件夹的路径（如果页面和xTools文件夹不是同级，则需要设定此值）。importFile()中会用到
     var BASE_PATH = oScriptTag.attr("fixing-address") || "xTools/";
     /* ----------------------------------- 【 基础设置  END  】 ------------------------------- */
@@ -25,6 +25,167 @@
     /* ----------- 使用 jQuery.extend(xTools.jQuery_addOns) 可以方便的再次添加 --------------- */
     xTools.jQuery_addOns = {
 
+
+        /* 
+         * $.zxparam_check(box)：关键属性 x_valid x_chs，需要定义全局设置 ERROR_LAYER_CONFIG
+         */
+        zxparam_check: function(box) {
+            var errorHandle =
+                'item.focus();' +
+                'flag = false;';
+            var flag = true;
+            var arr = $(box).find("[x_valid]");
+            $.each(arr, function(index, item) {
+                // 验证类型
+                var validType = $(item).attr("x_valid");
+                // 中文提示
+                var chs = $(item).attr("x_chs");
+                // 值
+                var val = $.trim($(item).val());
+                $(item).val(val);
+                // required：必填
+                if (/_required_/.test(validType)) {
+                    if (val.length === 0) {
+                        layer.msg(chs + "不能为空！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // western:英文数字下划线
+                if (/_western_/.test(validType)) {
+                    if (val.length > 0 && !(/^[a-zA-Z0-9_]+$/.test(val))) {
+                        layer.msg(chs + "必须为英文、数字、下划线！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // equalto：相等，用于确认密码
+                if (/_equalto_/.test(validType)) {
+                    var twin = $(box).find("[x_name='" + $(item).attr("x_equalto") + "']");
+                    if (twin.val().trim() !== val) {
+                        layer.msg(chs + "和" + twin.attr("x_chs") + "必须相同！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // phone
+                if (/_phone_/.test(validType)) {
+                    if (val.length > 0 && !(/^0\d{2,3}-?\d{7,8}$/.test(val) || /^1\d{10}$/.test(val))) {
+                        layer.msg(chs + "必须为合法的固话或手机格式！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // email
+                if (/_email_/.test(validType)) {
+                    if (val.length > 0 && !(/^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(val))) {
+                        layer.msg(chs + "必须为合法的邮箱格式！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+
+            });
+            return flag;
+        },
+        /* 
+         * $.zxparam_get(box)：关键属性 x_name
+         */
+        zxparam_get: function(box) {
+            var param = {};
+            var arr = $(box).find("[x_name]");
+            $.each(arr, function(index, item) {
+                var key = $(item).attr('x_name');
+                var value;
+                if ($(item).prop("type") == 'radio') {
+                    // radio
+                    value = $(box).find("[x_name='" + key + "']:checked").val().trim();
+                } else if ($(item)[0].tagName.toUpperCase() == 'SELECT') {
+                    // select
+                    value = $(item).val();
+                } else {
+                    value = $(item).val().trim();
+                }
+
+                param[key] = value;
+            });
+            return param;
+        },
+        /* 
+         * $.zxparam_assign(box,param)：关键属性 x_name
+         */
+        zxparam_assign: function(box, param) {
+            param = param || {};
+            var arr = $(box).find("[x_name]");
+            $.each(arr, function(index, item) {
+                var key = $(item).attr('x_name');
+                var value = param[key];
+                if ($.checkNull(value)) {
+                    if ($(item).prop("type") == 'radio') {
+                        // radio
+                        $(box).find("[x_name='" + key + "']").prop("checked", false);
+                        $(box).find("[x_name='" + key + "'][value='" + value + "']").prop("checked", true);
+                    } else if ($(item)[0].tagName.toUpperCase() == 'SELECT') {
+                        // select
+                        $(item).val(value);
+                    } else {
+                        $(item).val(value);
+                        $(item).text(value);
+                    }
+                }
+            });
+        },
+        /* 
+         * $.zxAsk(param)
+         */
+        zxAsk: function(param) {
+            // 打开弹窗
+            layer.confirm(param.msg, { icon: 7, title: false }, param.yes);
+        },
+        /* 
+         * $.zxDial(p)
+         */
+        zxDial: function(p) {
+            // -------------------- 清理弹窗 --------------------
+            if (!p.donnotclear) {
+                clearDial(p.layer.content);
+            }
+            // -------------------- 打开弹窗 --------------------
+            var defaults_param = {
+                type: 1,
+                area: ['520px', '550px'],
+                btn: ['保存', '取消'],
+                resize: true,
+                success: function(layero, index) {
+                    var mask = $(".layui-layer-shade");
+                    mask.appendTo(layero.parent());
+                },
+            };
+            layer.open($.extend({}, defaults_param, p.layer));
+
+            // -------------------- 部门等的隐藏的innerTree --------------------
+            // 隐藏innerTree
+            $(".dial_innertree").hide();
+            // 把之前的click事件取消掉，不然click事件会触发多次，hide-show-hide-show..
+            $(".dial_innertree_triggerinput").off('click');
+            // 给innerTree绑定点击事件：点一下出来，选择后消失
+            $(".dial_innertree_triggerinput").on('click', function() {
+                var tree = $(this).siblings('div.dial_innertree');
+                if (tree.css("display") == "block") {
+                    tree.hide();
+                } else if (tree.css("display") == "none") {
+                    tree.show();
+                }
+            });
+
+            // ----------------------------------------------------
+            function clearDial(oParent) {
+                oParent.find("input[type='text']").not("[x_donnotclear]").val("");
+                oParent.find("input[type='password']").not("[x_donnotclear]").val("");
+                oParent.find("input[type='radio']").not("[x_donnotclear]").prop("checked", false);
+                oParent.find("input[type='checkbox']").not("[x_donnotclear]").prop("checked", false);
+            }
+        },
         /* 
          * $.xguid()：(经验：$.guid不能用，这个是jqeury内部在用。用了会出错)
          */
@@ -234,19 +395,19 @@
     }, {
         name: "kindeditor",
         folder: "04_kindeditor",
-        description: "富文本编辑器【默认不引入】"
+        description: "富文本编辑器"
     }, {
         name: "ztree",
         folder: "05_zTree",
-        description: "树【默认不引入】"
+        description: "树"
     }, {
         name: "echarts2",
         folder: "06_echarts-2.2.7",
-        description: "echarts2兼容IE8【默认不引入】"
+        description: "echarts2兼容IE8"
     }, {
         name: "mindmap",
         folder: "07_Mindmap-Tree",
-        description: "思维导图（数据驱动）【默认不引入】"
+        description: "思维导图（数据驱动）"
     }, {
         name: "jq22page",
         folder: "08_pagination",
@@ -258,11 +419,11 @@
     }, {
         name: "select2",
         folder: "10_select2",
-        description: "下拉框"
+        description: "下拉框，支持ie9+"
     }, {
         name: "webuploader",
         folder: "11_webuploader",
-        description: "上传【默认不引入】"
+        description: "上传"
     }, {
         name: "switch",
         folder: "12_simpleswitch",
@@ -346,8 +507,8 @@
         );
         // 09 zxtable 表格
         (/\bzxtable\b/i.test(pluginList)) && (
-            importFile("09_zxTable/zxTable.dev.js")
-            // importFile("09_zxTable/zxTable.min.js")
+            // importFile("09_zxTable/zxTable.dev.js")
+            importFile("09_zxTable/zxTable.js")
 
         );
         // 10 select 表格
@@ -370,7 +531,8 @@
         );
         // 12 zxtreetable 
         (/\bzxtreetable\b/i.test(pluginList)) && (
-            importFile("13_zxTreetable/zxTreetable.dev.js")
+            // importFile("13_zxTreetable/zxTreetable.dev.js"),
+            importFile("13_zxTreetable/zxTreetable.js")
         );
     }
     /* ----------------------------- 【 内部功能函数，不对外开放  END  】 ---------------------- */
@@ -803,6 +965,33 @@ if (!Array.prototype.includes) {
         return false;
     }
 }
+if (!Array.prototype.convert_to_treedata) {
+    Array.prototype.convert_to_treedata = function(param) {
+        param = param || {};
+        before_idkey = param.before_idkey || "id";
+        before_parentkey = param.before_parentkey || "parentId";
+        after_childkey = param.after_childkey || "child";
+        var dataArr = this;
+        let tree = dataArr.filter((father) => {
+            //循环所有项
+            let branchArr = dataArr.filter((child) => {
+                //返回每一项的子级数组        
+                return father[before_idkey] == child[before_parentkey]
+            });
+            if (branchArr.length > 0) {
+                //如果存在子级，则给父级添加一个child属性，并赋值        
+                father[after_childkey] = branchArr;
+            }
+            //返回没有父级的
+            return !(dataArr.some(function(item) {
+                return item[before_idkey] === father[before_parentkey];
+            }));
+        });
+        //返回树形数据
+        return tree;
+    }
+}
+
 /* -------------------------- 【 Array方法扩展  END  】 ----------------------------------- */
 /* ------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------- */

@@ -21,6 +21,20 @@ label,span,input{
 img{
     border: none;
 }
+input[disabled],textarea[disabled],select[disabled]{    
+    background: #ebebe4;
+    cursor: not-allowed;
+}
+/* ------------------------------- 红色星号（用来标志表单必填项） -------------------------------*/
+redstar{
+        display: inline-block;
+}
+redstar:after{
+    display: inline-block;
+    content: "*";
+    font-size: 12px;
+    color: #F44336;
+}
 /* ------------------------------- 按钮 -------------------------------*/
 input[type='button'], button {
     cursor: pointer;
