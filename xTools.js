@@ -41,11 +41,20 @@
                 // 中文提示
                 var chs = $(item).attr("x_chs");
                 // 值
-                var val = $.trim($(item).val());
-                $(item).val(val);
+                var val;
+                if ($(item).prop("type") == 'radio') {
+                    // radio
+                    val = $(box).find("[x_name='" + $(item).attr('x_name') + "']:checked").val();
+                } else if ($(item)[0].tagName.toUpperCase() == 'SELECT') {
+                    // select
+                    val = $(item).val();
+                } else {
+                    val = $(item).val().trim();
+                    $(item).val(val);
+                }
                 // required：必填
                 if (/_required_/.test(validType)) {
-                    if (val.length === 0) {
+                    if ((!val) || val.length === 0) {
                         layer.msg(chs + "不能为空！", ERROR_LAYER_CONFIG);
                         eval(errorHandle);
                         return false;
@@ -55,6 +64,22 @@
                 if (/_western_/.test(validType)) {
                     if (val.length > 0 && !(/^[a-zA-Z0-9_]+$/.test(val))) {
                         layer.msg(chs + "必须为英文、数字、下划线！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // integer 整数
+                if (/_integer_/.test(validType)) {
+                    if (val.length > 0 && !(/^\d+$/.test(val))) {
+                        layer.msg(chs + "必须为整数！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // decimal:小数
+                if (/_decimal_/.test(validType)) {
+                    if (val.length > 0 && !(/^(-?\d+)(\.\d+)?$/.test(val))) {
+                        layer.msg(chs + "必须为数字！", ERROR_LAYER_CONFIG);
                         eval(errorHandle);
                         return false;
                     }
@@ -76,10 +101,26 @@
                         return false;
                     }
                 }
+                // cellphone 手机
+                if (/_cellphone_/.test(validType)) {
+                    if (val.length > 0 && !(/^1\d{10}$/.test(val))) {
+                        layer.msg(chs + "必须为合法的手机格式！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
                 // email
                 if (/_email_/.test(validType)) {
                     if (val.length > 0 && !(/^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(val))) {
                         layer.msg(chs + "必须为合法的邮箱格式！", ERROR_LAYER_CONFIG);
+                        eval(errorHandle);
+                        return false;
+                    }
+                }
+                // 统一社会信用代码
+                if (/_zzjgdm_/.test(validType)) {
+                    if (val.length > 0 && !(new check_zzjgdm().verify(val))) {
+                        layer.msg(chs + "必须为合法的18位统一社会信用代码格式！", ERROR_LAYER_CONFIG);
                         eval(errorHandle);
                         return false;
                     }
@@ -99,7 +140,37 @@
                 var value;
                 if ($(item).prop("type") == 'radio') {
                     // radio
-                    value = $(box).find("[x_name='" + key + "']:checked").val().trim();
+                    value = $(box).find("[x_name='" + key + "'][type='radio']:checked").val();
+                } else if ($(item).prop("type") == 'checkbox') {
+                    // checkbox
+                    if ($(item).attr("x_schk") && $(item).attr("x_schk").length > 0) {
+                        // 特殊的checkbox（只有一个checkbox，选中时值为A，没选中时值为B）
+                        /* 用法：
+                                是女孩：<input type="checkbox" x_name="isgirl" x_schk="1,0">
+                           取值结果：
+                                选中时为"1"，未选中时为"0"
+                        */
+                        var checked_value = $(item).attr("x_schk").split(",")[0];
+                        var unchecked_value = $(item).attr("x_schk").split(",")[1];
+                        value = $(item).prop("checked") ? checked_value : unchecked_value;
+                    } else {
+                        // 普通的checkbox（同一个name有多个checkbox）                    
+                        /* 用法：
+                                <input type="checkbox" value="游泳" name="hobby" x_name="hobby">游泳
+                                <input type="checkbox" value="下棋" name="hobby" x_name="hobby">下棋
+                                <input type="checkbox" value="绘画" name="hobby" x_name="hobby">绘画
+                            取值结果：
+                                "游泳、绘画
+                        */
+                        var checkbox_item_arr = [];
+                        var checkbox_item_value_arr = [];
+                        checkbox_item_arr = $(box).find("[x_name='" + key + "'][type='checkbox']:checked");
+                        $.each(checkbox_item_arr, function(index, item) {
+                            checkbox_item_value_arr.push($(item).val());
+                        });
+                        value = checkbox_item_value_arr.join(",");
+
+                    }
                 } else if ($(item)[0].tagName.toUpperCase() == 'SELECT') {
                     // select
                     value = $(item).val();
@@ -123,11 +194,47 @@
                 if ($.checkNull(value)) {
                     if ($(item).prop("type") == 'radio') {
                         // radio
-                        $(box).find("[x_name='" + key + "']").prop("checked", false);
-                        $(box).find("[x_name='" + key + "'][value='" + value + "']").prop("checked", true);
+                        $(box).find("[type='radio'][x_name='" + key + "']").prop("checked", false);
+                        $(box).find("[type='radio'][x_name='" + key + "'][value='" + value + "']").prop("checked", true);
+                    } else if ($(item).prop("type") == 'checkbox') {
+                        // checkbox
+                        // 转为字符串（ 1 -> "1"）
+                        value = value + "";
+                        if ($(item).attr("x_schk") && $(item).attr("x_schk").length > 0) {
+                            // 特殊的checkbox（只有一个checkbox，选中时值为A，没选中时值为B）
+                            /* 用法：
+                                    是女孩：<input type="checkbox" x_name="isgirl" x_schk="1,0">
+                               取值结果：
+                                    选中时为"1"，未选中时为"0"
+                            */
+                            var checked_value = $(item).attr("x_schk").split(",")[0];
+                            var unchecked_value = $(item).attr("x_schk").split(",")[1];
+                            if (value == checked_value) {
+                                $(item).prop("checked", true);
+                            } else {
+                                $(item).prop("checked", false);
+                            }
+                        } else {
+                            // 普通的checkbox（同一个name有多个checkbox）                    
+                            /* 用法：
+                                    <input type="checkbox" value="游泳" name="hobby" x_name="hobby">游泳
+                                    <input type="checkbox" value="下棋" name="hobby" x_name="hobby">下棋
+                                    <input type="checkbox" value="绘画" name="hobby" x_name="hobby">绘画
+                                取值结果：
+                                    "游泳、绘画
+                            */
+                            $(box).find("[type='checkbox'][x_name='" + key + "']").prop("checked", false);
+                            var checkbox_item_value_arr = value.split(",");
+                            $.each(checkbox_item_value_arr, function(index, item) {
+                                $(box).find("[type='checkbox'][x_name='" + key + "'][value='" + item + "']").prop("checked", true);
+                            });
+                        }
                     } else if ($(item)[0].tagName.toUpperCase() == 'SELECT') {
                         // select
                         $(item).val(value);
+                        setTimeout(function() {
+                            $(item).trigger("change");
+                        }, 1000);
                     } else {
                         $(item).val(value);
                         $(item).text(value);
@@ -441,6 +548,8 @@
     /* ------------------------------------------------------------------------------------- */
     /* ------------------------------------------------------------------------------------- */
     /* ------------------------------------ 【 初始化 START 】 -------------------------------  */
+    // 引入lodash
+    importFile("00_/lodash.js");
     // 引入插件
     importPlugins();
     // 引入样式重置和预设的css
